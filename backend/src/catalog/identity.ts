@@ -78,6 +78,14 @@ export function normalize(input: string): string {
 }
 
 /**
+ * An ISRC or similar code in the form the catalog stores: upper case, letters
+ * and digits only. Mirrors SampleDatabase.normalizeIdentifier (Models.swift).
+ */
+export function normalizeIdentifier(value: string): string {
+  return [...value.toUpperCase()].filter((c) => /[\p{L}\p{N}]/u.test(c)).join("");
+}
+
+/**
  * normalize() without dropping bracketed qualifiers. Mirrors
  * build_db.version_key(): identity uses it to keep "Song (Remix)" apart from
  * "Song" when one derives from the other.

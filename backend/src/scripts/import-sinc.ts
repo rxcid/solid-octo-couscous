@@ -16,11 +16,15 @@ import { parseArgs } from "node:util";
 import { count, sql } from "drizzle-orm";
 import type { PgTable } from "drizzle-orm/pg-core";
 import { NORMALIZATION_VERSION, normalize } from "../catalog/identity.js";
-import { db, pool } from "../db/client.js";
+import { createDb } from "../db/client.js";
+import { truncateCatalog } from "../db/maintenance.js";
 import * as s from "../db/schema.js";
+import { env } from "../env.js";
 
 const SUPPORTED_SCHEMA_VERSION = 6;
 const CHUNK = 2000;
+
+const { db, pool } = createDb(env.DATABASE_URL);
 
 class ImportError extends Error {}
 
@@ -138,14 +142,7 @@ async function importCatalog(rows: (query: string) => Row[]) {
     if (existing > 0 && !args.replace) {
       throw new ImportError(`the database already holds ${existing} tracks. Rerun with --replace to reload.`);
     }
-    if (args.replace) {
-      await tx.execute(sql`
-        TRUNCATE sample_assertions, sample_segments, samples,
-          track_lineage_disclosures, track_works, work_identifiers,
-          track_contributors, track_artists, track_name_aliases, track_aliases,
-          track_identifiers, tracks, works, artists
-        RESTART IDENTITY`);
-    }
+    if (args.replace) await truncateCatalog(tx);
 
     const artistIds = new IdMap("artist");
     await copy(tx, s.artists, "artists", rows("SELECT * FROM artists"), (r) => ({
