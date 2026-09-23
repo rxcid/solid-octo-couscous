@@ -1,0 +1,94 @@
+[
+  {
+    "input": "L'été (feat. Someone) [Remastered]",
+    "normalized": "l ete"
+  },
+  {
+    "input": "Earth, Wind & Fire",
+    "normalized": "earth wind and fire"
+  },
+  {
+    "input": "(You Gotta) Fight for Your Right (To Party)",
+    "normalized": "you gotta fight for your right"
+  },
+  {
+    "input": "[unknown]",
+    "normalized": "unknown"
+  },
+  {
+    "input": "AC/DC",
+    "normalized": "ac dc"
+  },
+  {
+    "input": "Café del Mar",
+    "normalized": "cafe del mar"
+  },
+  {
+    "input": "İstanbul (Not Constantinople)",
+    "normalized": "istanbul"
+  },
+  {
+    "input": "Ｎｕｔｈｉｎ　Ｂｕｔ　ａ　Ｇ　Ｔｈａｎｇ",
+    "normalized": "nuthin but a g thang"
+  },
+  {
+    "input": "ﬁnale ﬂow",
+    "normalized": "finale flow"
+  },
+  {
+    "input": "Straight Up²",
+    "normalized": "straight up2"
+  },
+  {
+    "input": "Ｆｕｎｋｙ（Ｒａｄｉｏ　Ｅｄｉｔ）",
+    "normalized": "funky"
+  },
+  {
+    "input": "東京ナイト",
+    "normalized": "東京ナイト"
+  },
+  {
+    "input": "Привет, мир!",
+    "normalized": "привет мир"
+  },
+  {
+    "input": "¥$",
+    "normalized": "¥$"
+  },
+  {
+    "input": "👀",
+    "normalized": "👀"
+  },
+  {
+    "input": "Mo' Money Mo' Problems (feat. Puff Daddy & Mase)",
+    "normalized": "mo money mo problems"
+  },
+  {
+    "input": "Karly featuring エイジア エンジニア",
+    "normalized": "karly featuring エイシア エンシニア"
+  },
+  {
+    "input": "Alright! ハートキャッチプリキュア!",
+    "normalized": "alright ハートキャッチフリキュア"
+  },
+  {
+    "input": "Every Song On घी Played At Once",
+    "normalized": "every song on घ played at once"
+  },
+  {
+    "input": "Every Song On බිත්තර Played At Once",
+    "normalized": "every song on බ තතර played at once"
+  },
+  {
+    "input": "Every Song On ໂຮງຫມໍ Played At Once",
+    "normalized": "every song on ໂຮງຫມ played at once"
+  },
+  {
+    "input": "MΔKΣ Δ NEW HØMΣ",
+    "normalized": "mδkς δ new hømς"
+  },
+  {
+    "input": "Øresund Ætherial Straße",
+    "normalized": "øresund ætherial straße"
+  }
+]

@@ -1,0 +1,26 @@
+name: music-sample-graph
+
+# Local development database. Credentials are dev-only defaults; override any of
+# them with a root-level .env file (Compose reads it automatically). If you change
+# them, update DATABASE_URL in backend/.env to match.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-msg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-msg}
+      POSTGRES_DB: ${POSTGRES_DB:-music_sample_graph}
+    ports:
+      # Bound to loopback only so the dev database isn't reachable from your network.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
