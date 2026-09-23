@@ -18,6 +18,11 @@ public struct SampleGraphClient: Sendable {
         client = Client(serverURL: serverURL, transport: transport)
     }
 
+    /// Sends requests through `session`, e.g. one configured with short timeouts.
+    public init(serverURL: URL, session: URLSession) {
+        self.init(serverURL: serverURL, transport: URLSessionTransport(configuration: .init(session: session)))
+    }
+
     /// The catalog recordings for a recognized song.
     ///
     /// An ISRC match wins; otherwise every recording with the same normalized
