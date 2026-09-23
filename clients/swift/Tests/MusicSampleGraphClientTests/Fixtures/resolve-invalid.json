@@ -1,0 +1,10 @@
+{
+  "url": "/v1/tracks/resolve?title=Night%20Drive&kind=song",
+  "status": 400,
+  "body": {
+    "error": {
+      "code": "invalid_request",
+      "message": "Pass isrc, or both title and artist."
+    }
+  }
+}

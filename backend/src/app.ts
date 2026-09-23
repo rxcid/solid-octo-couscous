@@ -4,6 +4,7 @@ import swaggerUi from "@fastify/swagger-ui";
 import type { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import { sql } from "drizzle-orm";
 import Fastify, { type FastifyServerOptions } from "fastify";
+import { publicDocument } from "./api/openapi.js";
 import { v1 } from "./api/v1.js";
 import type { Db } from "./db/client.js";
 
@@ -33,8 +34,11 @@ export async function buildApp({ db, corsOrigin, logger = true }: AppOptions) {
       ],
     },
   });
-  await app.register(swaggerUi, { routePrefix: "/docs" });
-  app.get("/openapi.json", { schema: { hide: true } }, async () => app.swagger());
+  await app.register(swaggerUi, {
+    routePrefix: "/docs",
+    transformSpecification: (spec) => publicDocument(spec),
+  });
+  app.get("/openapi.json", { schema: { hide: true } }, async () => publicDocument(app.swagger()));
 
   // Every error leaves in one shape: { error: { code, message } }.
   app.setErrorHandler((error: Error & { statusCode?: number; validation?: unknown }, request, reply) => {

@@ -1,0 +1,31 @@
+{
+  "url": "/v1/tracks/node_dccd7051cb11697744127f0485a38c58ca40ae76e51430e1148bab84bc7df3b4/siblings",
+  "status": 200,
+  "body": {
+    "groups": [
+      {
+        "source": {
+          "id": "node_mb_00000000-0000-4000-8000-00000000000a",
+          "kind": "song",
+          "title": "Funky Break",
+          "artistCredit": "The Originals",
+          "releaseYear": 1969,
+          "isrc": "USAAA6900001",
+          "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000a"
+        },
+        "total": 1,
+        "tracks": [
+          {
+            "id": "node_mb_00000000-0000-4000-8000-00000000000b",
+            "kind": "song",
+            "title": "City Anthem",
+            "artistCredit": "MC Example",
+            "releaseYear": 1988,
+            "isrc": "USBBB8800001",
+            "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000b"
+          }
+        ]
+      }
+    ]
+  }
+}

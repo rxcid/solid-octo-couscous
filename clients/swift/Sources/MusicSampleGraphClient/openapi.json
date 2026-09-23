@@ -1,0 +1,1086 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Music Sample Graph API",
+    "version": "1.0.0",
+    "description": "Sinc's Music DNA graph: what a song samples, what samples it, and who else built on the same sources. Ids are Sinc's catalog canonical ids."
+  },
+  "components": {
+    "schemas": {
+      "ArtistCredit": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "creditedName": {
+            "type": "string"
+          },
+          "joinPhrase": {
+            "type": "string"
+          }
+        },
+        "title": "ArtistCredit"
+      },
+      "Contributor": {
+        "type": "object",
+        "required": [
+          "name",
+          "role"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "artistId": {
+            "type": "string"
+          },
+          "creditedName": {
+            "type": "string"
+          }
+        },
+        "title": "Contributor"
+      },
+      "Direction": {
+        "enum": [
+          "sources",
+          "derivatives"
+        ],
+        "title": "Direction",
+        "type": "string"
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "title": "Error"
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "title": "ErrorDetail"
+      },
+      "Identifier": {
+        "type": "object",
+        "required": [
+          "namespace",
+          "identifier"
+        ],
+        "properties": {
+          "namespace": {
+            "$ref": "#/components/schemas/IdentifierNamespace"
+          },
+          "identifier": {
+            "type": "string"
+          }
+        },
+        "title": "Identifier"
+      },
+      "IdentifierNamespace": {
+        "enum": [
+          "musicbrainz_recording",
+          "isrc",
+          "iswc",
+          "apple_music",
+          "spotify",
+          "acrcloud",
+          "audd",
+          "acoustid"
+        ],
+        "title": "IdentifierNamespace",
+        "type": "string"
+      },
+      "Lineage": {
+        "type": "object",
+        "required": [
+          "direction",
+          "truncated",
+          "nodes"
+        ],
+        "properties": {
+          "direction": {
+            "$ref": "#/components/schemas/Direction"
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "The node budget cut the tree short."
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineageNode"
+            },
+            "description": "Depth-first: every node comes after its parent."
+          }
+        },
+        "title": "Lineage"
+      },
+      "LineageClassification": {
+        "enum": [
+          "human",
+          "ai_assisted",
+          "ai_generated",
+          "unknown"
+        ],
+        "title": "LineageClassification",
+        "type": "string"
+      },
+      "LineageDisclosure": {
+        "type": "object",
+        "required": [
+          "classification",
+          "source"
+        ],
+        "properties": {
+          "classification": {
+            "$ref": "#/components/schemas/LineageClassification"
+          },
+          "source": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "evidenceText": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        },
+        "title": "LineageDisclosure"
+      },
+      "LineageNode": {
+        "type": "object",
+        "required": [
+          "id",
+          "depth",
+          "track",
+          "hiddenChildCount",
+          "isCycle"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique in this response: \"0\" is the root, \"0.2\" its third child."
+          },
+          "parentId": {
+            "type": "string"
+          },
+          "depth": {
+            "type": "integer",
+            "description": "Generations from the root, which is 0."
+          },
+          "track": {
+            "$ref": "#/components/schemas/TrackSummary"
+          },
+          "relationship": {
+            "description": "The relationship joining this node to its parent.",
+            "$ref": "#/components/schemas/Relationship"
+          },
+          "hiddenChildCount": {
+            "type": "integer",
+            "description": "Relationships this node has that the tree does not show."
+          },
+          "isCycle": {
+            "type": "boolean",
+            "description": "This song is already on the path to the root, so it is not expanded."
+          }
+        },
+        "title": "LineageNode"
+      },
+      "MatchMethod": {
+        "enum": [
+          "isrc",
+          "title_artist"
+        ],
+        "title": "MatchMethod",
+        "type": "string"
+      },
+      "Provenance": {
+        "type": "object",
+        "required": [
+          "sources",
+          "sourceKinds",
+          "assertionCount",
+          "isVerified",
+          "isInference"
+        ],
+        "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Who asserts this, e.g. \"musicbrainz\", \"wikipedia\"."
+          },
+          "sourceKinds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "assertionCount": {
+            "type": "integer"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "At least one assertion has been verified."
+          },
+          "isInference": {
+            "type": "boolean",
+            "description": "Inferred from shared writer credits rather than stated."
+          },
+          "confidence": {
+            "type": "number",
+            "description": "The highest confidence any source reports."
+          },
+          "evidenceExcerpt": {
+            "type": "string"
+          },
+          "evidenceUrl": {
+            "type": "string"
+          }
+        },
+        "title": "Provenance"
+      },
+      "Relationship": {
+        "type": "object",
+        "required": [
+          "id",
+          "relationshipType",
+          "source",
+          "destination",
+          "segments",
+          "provenance"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The relationship's canonical id (edge_…)."
+          },
+          "relationshipType": {
+            "$ref": "#/components/schemas/RelationshipType"
+          },
+          "source": {
+            "$ref": "#/components/schemas/TrackSummary"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/TrackSummary"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Segment"
+            }
+          },
+          "provenance": {
+            "$ref": "#/components/schemas/Provenance"
+          }
+        },
+        "title": "Relationship"
+      },
+      "RelationshipPage": {
+        "type": "object",
+        "required": [
+          "total",
+          "items"
+        ],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Related songs in all, before the limit."
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Relationship"
+            }
+          }
+        },
+        "title": "RelationshipPage"
+      },
+      "Relationships": {
+        "type": "object",
+        "required": [
+          "sources",
+          "derivatives"
+        ],
+        "properties": {
+          "sources": {
+            "$ref": "#/components/schemas/RelationshipPage"
+          },
+          "derivatives": {
+            "$ref": "#/components/schemas/RelationshipPage"
+          }
+        },
+        "title": "Relationships",
+        "description": "sources: what this song takes from (it is the destination). derivatives: what takes from this song (it is the source)."
+      },
+      "RelationshipType": {
+        "enum": [
+          "sampled",
+          "interpolated",
+          "covered",
+          "remixed"
+        ],
+        "title": "RelationshipType",
+        "type": "string"
+      },
+      "Resolution": {
+        "type": "object",
+        "required": [
+          "tracks"
+        ],
+        "properties": {
+          "matchedBy": {
+            "$ref": "#/components/schemas/MatchMethod"
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackSummary"
+            },
+            "description": "Every recording that matched. Empty when the catalog has none."
+          }
+        },
+        "title": "Resolution"
+      },
+      "SampleType": {
+        "enum": [
+          "direct",
+          "looped",
+          "chopped",
+          "pitch_shifted",
+          "time_stretched",
+          "filtered",
+          "layered"
+        ],
+        "title": "SampleType",
+        "type": "string"
+      },
+      "SearchResults": {
+        "type": "object",
+        "required": [
+          "tracks"
+        ],
+        "properties": {
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackSummary"
+            }
+          }
+        },
+        "title": "SearchResults"
+      },
+      "Segment": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "element": {
+            "type": "string",
+            "description": "What was borrowed, e.g. \"drums (drum set)\"."
+          },
+          "atInSourceMs": {
+            "type": "integer"
+          },
+          "atInDestinationMs": {
+            "type": "integer"
+          },
+          "durationMs": {
+            "type": "integer"
+          },
+          "sampleType": {
+            "$ref": "#/components/schemas/SampleType"
+          },
+          "pitchShiftSemitones": {
+            "type": "number"
+          },
+          "tempoRatio": {
+            "type": "number"
+          },
+          "isReversed": {
+            "type": "boolean"
+          },
+          "isLooped": {
+            "type": "boolean"
+          }
+        },
+        "title": "Segment"
+      },
+      "SiblingGroup": {
+        "type": "object",
+        "required": [
+          "source",
+          "total",
+          "tracks"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/TrackSummary"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Every other song built from this source."
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackSummary"
+            }
+          }
+        },
+        "title": "SiblingGroup"
+      },
+      "Siblings": {
+        "type": "object",
+        "required": [
+          "groups"
+        ],
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SiblingGroup"
+            }
+          }
+        },
+        "title": "Siblings"
+      },
+      "TrackDetail": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "artistCredit",
+          "identifiers",
+          "artists",
+          "contributors",
+          "works",
+          "versions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^node_[A-Za-z0-9_-]{1,100}$",
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrackKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "artistCredit": {
+            "type": "string",
+            "description": "The artist as credited on this recording."
+          },
+          "releaseYear": {
+            "type": "integer"
+          },
+          "isrc": {
+            "type": "string"
+          },
+          "musicbrainzRecordingId": {
+            "type": "string"
+          },
+          "durationMs": {
+            "type": "integer"
+          },
+          "disambiguation": {
+            "type": "string"
+          },
+          "identifiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Identifier"
+            }
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArtistCredit"
+            },
+            "description": "The ordered artist credit. Joining creditedName (or name) and joinPhrase rebuilds artistCredit."
+          },
+          "contributors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contributor"
+            }
+          },
+          "works": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Work"
+            },
+            "description": "Compositions this recording performs."
+          },
+          "lineageDisclosure": {
+            "description": "Whether the recording is human-made or AI-generated. Null means not recorded, not human-made.",
+            "$ref": "#/components/schemas/LineageDisclosure"
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackSummary"
+            },
+            "description": "Other recordings of the same song: the same normalized title, artist, and kind, or a shared ISRC. Relationships and siblings cover all of them."
+          }
+        },
+        "title": "TrackDetail"
+      },
+      "TrackKind": {
+        "enum": [
+          "song",
+          "film",
+          "tv",
+          "comedy",
+          "speech"
+        ],
+        "title": "TrackKind",
+        "type": "string"
+      },
+      "TrackSummary": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "artistCredit"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^node_[A-Za-z0-9_-]{1,100}$",
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrackKind"
+          },
+          "title": {
+            "type": "string"
+          },
+          "artistCredit": {
+            "type": "string",
+            "description": "The artist as credited on this recording."
+          },
+          "releaseYear": {
+            "type": "integer"
+          },
+          "isrc": {
+            "type": "string"
+          },
+          "musicbrainzRecordingId": {
+            "type": "string"
+          }
+        },
+        "title": "TrackSummary"
+      },
+      "Work": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "iswcs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "iswcs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "Work"
+      }
+    }
+  },
+  "paths": {
+    "/v1/tracks/resolve": {
+      "get": {
+        "operationId": "resolveTrack",
+        "summary": "Find the catalog recordings for a recognized song",
+        "tags": [
+          "tracks"
+        ],
+        "description": "Pass what recognition returned. An ISRC match wins; otherwise every recording with the same normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "isrc",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "in": "query",
+            "name": "title",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "in": "query",
+            "name": "artist",
+            "required": false
+          },
+          {
+            "schema": {
+              "$ref": "#/components/schemas/TrackKind"
+            },
+            "in": "query",
+            "name": "kind",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Resolution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tracks/{id}": {
+      "get": {
+        "operationId": "getTrack",
+        "summary": "A track, its credits, and its other versions",
+        "tags": [
+          "tracks"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrackDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tracks/{id}/relationships": {
+      "get": {
+        "operationId": "getRelationships",
+        "summary": "What the song takes from, and what takes from it",
+        "tags": [
+          "tracks"
+        ],
+        "description": "Covers every version of the song. One relationship per related song, direction, and type, preferring the one that says what was borrowed. Only published relationships.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "description": "Per direction."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "sources: what this song takes from (it is the destination). derivatives: what takes from this song (it is the source).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Relationships"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tracks/{id}/lineage": {
+      "get": {
+        "operationId": "getLineage",
+        "summary": "The song's lineage, generation by generation",
+        "tags": [
+          "tracks"
+        ],
+        "description": "A tree of relationships from the song outward, as Sinc's lineage view builds it: sources by default (what it samples, what those sample, and so on), or derivatives. Nodes come depth-first with parentId set, so a client can rebuild the tree in one pass.",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/components/schemas/Direction"
+            },
+            "in": "query",
+            "name": "direction",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "default": 3
+            },
+            "in": "query",
+            "name": "depth",
+            "required": false,
+            "description": "Generations below the root."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            },
+            "in": "query",
+            "name": "rootLimit",
+            "required": false,
+            "description": "Children shown under the root."
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 4
+            },
+            "in": "query",
+            "name": "childLimit",
+            "required": false,
+            "description": "Children shown under any other node."
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lineage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tracks/{id}/siblings": {
+      "get": {
+        "operationId": "getSiblings",
+        "summary": "Other songs built from the same sources",
+        "tags": [
+          "tracks"
+        ],
+        "description": "Grouped by shared source, busiest first. `total` counts every song before trimming.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 12
+            },
+            "in": "query",
+            "name": "perSource",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 4
+            },
+            "in": "query",
+            "name": "sources",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Siblings"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/search": {
+      "get": {
+        "operationId": "searchTracks",
+        "summary": "Search songs by title and artist",
+        "tags": [
+          "search"
+        ],
+        "description": "Every word must appear in the title or artist, so \"juicy notorious\" works. One recording per song.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 24
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResults"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "tracks",
+      "description": "Recordings and their relationships"
+    },
+    {
+      "name": "search",
+      "description": "Finding songs"
+    }
+  ]
+}

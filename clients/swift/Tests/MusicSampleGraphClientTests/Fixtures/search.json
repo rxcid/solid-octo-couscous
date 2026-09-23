@@ -1,0 +1,26 @@
+{
+  "url": "/v1/search?q=funky",
+  "status": 200,
+  "body": {
+    "tracks": [
+      {
+        "id": "node_mb_00000000-0000-4000-8000-00000000000a",
+        "kind": "song",
+        "title": "Funky Break",
+        "artistCredit": "The Originals",
+        "releaseYear": 1969,
+        "isrc": "USAAA6900001",
+        "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000a"
+      },
+      {
+        "id": "node_050ca4af1ec765dfeea90379e0048e5fc27153ccef0a7b9868aa639af4228e99",
+        "kind": "song",
+        "title": "Funky Break Pt. 1",
+        "artistCredit": "The Originals",
+        "releaseYear": 1969,
+        "isrc": "USAAA6900001",
+        "musicbrainzRecordingId": null
+      }
+    ]
+  }
+}

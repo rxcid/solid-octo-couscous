@@ -20,7 +20,9 @@
     "db:generate": "npm run db:generate -w backend",
     "db:migrate": "npm run db:migrate -w backend",
     "db:studio": "npm run db:studio -w backend",
-    "import:sinc": "npm run import:sinc -w backend --"
+    "import:sinc": "npm run import:sinc -w backend --",
+    "openapi": "npm run openapi -w backend",
+    "openapi:fixtures": "npm run openapi:fixtures -w backend"
   },
   "devDependencies": {
     "concurrently": "^10.0.5"

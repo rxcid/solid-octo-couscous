@@ -5,6 +5,7 @@
  *   resolveTracks   -> the identity_root/matched_root CTEs
  *   songRoot        -> the root CTE
  *   relationships   -> musicDNARelationships
+ *   lineage         -> lineage (LineageBuilder in Lineage.swift)
  *   siblings        -> siblings
  *   search          -> search
  *
@@ -17,6 +18,7 @@
  */
 import { type SQL, sql } from "drizzle-orm";
 import type {
+  Lineage,
   Relationship,
   Relationships,
   Resolution,
@@ -71,25 +73,40 @@ export async function findTrackId(db: Db, canonicalId: string): Promise<number |
   return row?.id ?? null;
 }
 
-/** Every recording of the songs these tracks belong to, the tracks included. */
-export async function songRoot(db: Db, trackIds: number[]): Promise<number[]> {
-  const found = await rows<{ id: number }>(db, sql`
-    WITH given AS (SELECT unnest(${intArray(trackIds)}) AS id),
+/**
+ * Song roots for several groups at once: for each key, every recording of the
+ * songs its tracks belong to, the tracks included.
+ */
+export async function songRoots(db: Db, groups: Map<number, number[]>): Promise<Map<number, number[]>> {
+  if (!groups.size) return new Map();
+  const keys = [...groups].flatMap(([key, ids]) => ids.map(() => key));
+  const ids = [...groups.values()].flat();
+  const found = await rows<{ key: number; id: number }>(db, sql`
+    WITH given AS (
+      SELECT * FROM unnest(${intArray(keys)}, ${intArray(ids)}) AS g(key, id)
+    ),
     same_isrc AS (
-      SELECT other.track_id AS id
-      FROM track_identifiers mine
+      SELECT g.key, other.track_id AS id
+      FROM given g
+      JOIN track_identifiers mine ON mine.track_id = g.id AND mine.namespace = 'isrc'
       JOIN track_identifiers other
         ON other.namespace = 'isrc' AND other.identifier = mine.identifier
-      WHERE mine.namespace = 'isrc' AND mine.track_id IN (SELECT id FROM given)
     ),
-    matched AS (SELECT id FROM given UNION SELECT id FROM same_isrc)
-    SELECT DISTINCT t.id
-    FROM tracks m
+    matched AS (SELECT key, id FROM given UNION SELECT key, id FROM same_isrc)
+    SELECT DISTINCT m.key, t.id
+    FROM matched m
+    JOIN tracks mt ON mt.id = m.id
     JOIN tracks t
-      ON t.norm_title = m.norm_title AND t.norm_artist = m.norm_artist AND t.kind = m.kind
-    WHERE m.id IN (SELECT id FROM matched)
-    ORDER BY t.id`);
-  return found.map((r) => r.id);
+      ON t.norm_title = mt.norm_title AND t.norm_artist = mt.norm_artist AND t.kind = mt.kind
+    ORDER BY m.key, t.id`);
+  const roots = new Map<number, number[]>([...groups.keys()].map((key) => [key, []]));
+  for (const r of found) roots.get(r.key)!.push(r.id);
+  return roots;
+}
+
+/** Every recording of the songs these tracks belong to, the tracks included. */
+export async function songRoot(db: Db, trackIds: number[]): Promise<number[]> {
+  return (await songRoots(db, new Map([[0, trackIds]]))).get(0)!;
 }
 
 // --- tracks -----------------------------------------------------------------
@@ -180,14 +197,84 @@ export async function trackDetail(db: Db, trackId: number): Promise<TrackDetail>
 
 // --- relationships -----------------------------------------------------------
 
-type EdgeRow = {
-  direction: "sources" | "derivatives";
+export type Direction = "sources" | "derivatives";
+
+type ChosenRow = {
+  key: number;
+  direction: Direction;
   total: number;
+  edge_id: number;
+  other_id: number;
+  position: number;
+};
+
+/**
+ * For each keyed song root, the relationships to show in each direction.
+ *
+ * A root covers every recording of the song, so one related song can arrive
+ * over several edges (a source sampled by the album cut and the radio edit).
+ * Like the app, keep one per direction, relationship type, and related song,
+ * preferring the edge that says what was borrowed, then the one with notes.
+ * Edges between two recordings of the same song are the song related to
+ * itself and never shown. `total` counts related songs before the limit.
+ */
+async function chooseRelated(
+  db: Db,
+  roots: Map<number, number[]>,
+  directions: Direction[],
+  limit: number,
+): Promise<ChosenRow[]> {
+  const keys = [...roots].flatMap(([key, ids]) => ids.map(() => key));
+  const ids = [...roots.values()].flat();
+  if (!ids.length) return [];
+  return rows<ChosenRow>(db, sql`
+    WITH root AS (
+      SELECT * FROM unnest(${intArray(keys)}, ${intArray(ids)}) AS r(key, id)
+    ),
+    adjacent AS (
+      SELECT r.key, s.id, 'derivatives' AS direction, s.child_track_id AS other_id
+      FROM root r JOIN samples s ON s.parent_track_id = r.id
+      WHERE ${directions.includes("derivatives")} AND s.status = 'published'
+        AND NOT EXISTS (SELECT 1 FROM root r2 WHERE r2.key = r.key AND r2.id = s.child_track_id)
+      UNION ALL
+      SELECT r.key, s.id, 'sources', s.parent_track_id
+      FROM root r JOIN samples s ON s.child_track_id = r.id
+      WHERE ${directions.includes("sources")} AND s.status = 'published'
+        AND NOT EXISTS (SELECT 1 FROM root r2 WHERE r2.key = r.key AND r2.id = s.parent_track_id)
+    ),
+    ranked AS (
+      SELECT a.key, a.id, a.direction, a.other_id,
+        row_number() OVER (
+          PARTITION BY a.key, a.direction, s.relationship_type,
+            other.norm_title, other.norm_artist, other.kind
+          ORDER BY
+            NOT EXISTS (SELECT 1 FROM sample_segments g WHERE g.sample_id = s.id AND g.element IS NOT NULL),
+            s.notes IS NULL,
+            s.id
+        ) AS rank
+      FROM adjacent a
+      JOIN samples s ON s.id = a.id
+      JOIN tracks other ON other.id = a.other_id
+    ),
+    chosen AS (
+      SELECT r.key, r.direction, r.id AS edge_id, r.other_id,
+        count(*) OVER (PARTITION BY r.key, r.direction)::int AS total,
+        row_number() OVER (
+          PARTITION BY r.key, r.direction ORDER BY lower(other.title), other.id
+        )::int AS position
+      FROM ranked r JOIN tracks other ON other.id = r.other_id
+      WHERE r.rank = 1
+    )
+    SELECT * FROM chosen WHERE position <= ${limit}
+    ORDER BY key, direction, position`);
+}
+
+type ProvenanceRow = {
   id: number;
   canonical_id: string;
   parent_track_id: number;
   child_track_id: number;
-  relationship_type: Relationship["type"];
+  relationship_type: Relationship["relationshipType"];
   notes: string | null;
   source_names: string[];
   source_kinds: string[];
@@ -212,55 +299,12 @@ type SegmentRow = {
   is_looped: boolean | null;
 };
 
-/**
- * Everything the song takes from and everything that takes from it.
- *
- * The root covers every version of the song, so one related song can arrive
- * over several edges (a source sampled by the album cut and the radio edit).
- * Like the app, keep one per direction, relationship type, and related song,
- * preferring the edge that says what was borrowed, then the one with notes.
- * Edges between two versions of the song are the song related to itself.
- */
-export async function relationships(db: Db, rootIds: number[], limit: number): Promise<Relationships> {
-  const edges = await rows<EdgeRow>(db, sql`
-    WITH root AS (SELECT unnest(${intArray(rootIds)}) AS id),
-    adjacent AS (
-      SELECT s.id, 'derivatives' AS direction, s.child_track_id AS other_id
-      FROM samples s
-      WHERE s.status = 'published'
-        AND s.parent_track_id IN (SELECT id FROM root)
-        AND s.child_track_id NOT IN (SELECT id FROM root)
-      UNION ALL
-      SELECT s.id, 'sources', s.parent_track_id
-      FROM samples s
-      WHERE s.status = 'published'
-        AND s.child_track_id IN (SELECT id FROM root)
-        AND s.parent_track_id NOT IN (SELECT id FROM root)
-    ),
-    ranked AS (
-      SELECT a.id, a.direction, a.other_id,
-        row_number() OVER (
-          PARTITION BY a.direction, s.relationship_type, other.norm_title, other.norm_artist, other.kind
-          ORDER BY
-            NOT EXISTS (SELECT 1 FROM sample_segments g WHERE g.sample_id = s.id AND g.element IS NOT NULL),
-            s.notes IS NULL,
-            s.id
-        ) AS rank
-      FROM adjacent a
-      JOIN samples s ON s.id = a.id
-      JOIN tracks other ON other.id = a.other_id
-    ),
-    chosen AS (
-      SELECT r.id, r.direction,
-        count(*) OVER (PARTITION BY r.direction)::int AS total,
-        row_number() OVER (PARTITION BY r.direction ORDER BY lower(other.title), other.id) AS position
-      FROM ranked r JOIN tracks other ON other.id = r.other_id
-      WHERE r.rank = 1
-    )
-    SELECT c.direction, c.total, s.id, s.canonical_id, s.parent_track_id, s.child_track_id,
-      s.relationship_type, s.notes, p.*
-    FROM chosen c
-    JOIN samples s ON s.id = c.id
+/** Relationships by internal id, with both recordings, segments, and provenance. */
+async function loadRelationships(db: Db, edgeIds: number[]): Promise<Map<number, Relationship>> {
+  if (!edgeIds.length) return new Map();
+  const edges = await rows<ProvenanceRow>(db, sql`
+    SELECT s.id, s.canonical_id, s.parent_track_id, s.child_track_id, s.relationship_type, s.notes, p.*
+    FROM samples s
     CROSS JOIN LATERAL (
       SELECT
         coalesce(array_agg(DISTINCT a.source_name ORDER BY a.source_name), '{}') AS source_names,
@@ -275,59 +319,187 @@ export async function relationships(db: Db, rootIds: number[], limit: number): P
           FILTER (WHERE trim(a.source_url) <> ''))[1] AS evidence_url
       FROM sample_assertions a WHERE a.sample_id = s.id
     ) p
-    WHERE c.position <= ${limit}
-    ORDER BY c.direction, c.position`);
-
-  const edgeIds = edges.map((e) => e.id);
+    WHERE s.id = ANY(${intArray(edgeIds)})`);
   const [summaries, segmentRows] = await Promise.all([
     trackSummaries(db, edges.flatMap((e) => [e.parent_track_id, e.child_track_id])),
-    edgeIds.length
-      ? rows<SegmentRow>(db, sql`
-          SELECT sample_id, element, timestamp_parent, timestamp_child, duration_ms, sample_type,
-            pitch_shift_semitones, tempo_ratio, is_reversed, is_looped
-          FROM sample_segments WHERE sample_id = ANY(${intArray(edgeIds)})
-          ORDER BY sample_id, timestamp_child NULLS LAST, id`)
-      : Promise.resolve([]),
+    rows<SegmentRow>(db, sql`
+      SELECT sample_id, element, timestamp_parent, timestamp_child, duration_ms, sample_type,
+        pitch_shift_semitones, tempo_ratio, is_reversed, is_looped
+      FROM sample_segments WHERE sample_id = ANY(${intArray(edgeIds)})
+      ORDER BY sample_id, timestamp_child NULLS LAST, id`),
   ]);
   const segments = Map.groupBy(segmentRows, (g) => g.sample_id);
-
-  const result: Relationships = {
-    sources: { total: 0, items: [] },
-    derivatives: { total: 0, items: [] },
-  };
-  for (const e of edges) {
-    const page = result[e.direction];
-    page.total = e.total;
-    page.items.push({
-      id: e.canonical_id,
-      type: e.relationship_type,
-      source: summaries.get(e.parent_track_id)!,
-      destination: summaries.get(e.child_track_id)!,
-      notes: e.notes,
-      segments: (segments.get(e.id) ?? []).map((g) => ({
-        element: g.element,
-        atInSourceMs: g.timestamp_parent,
-        atInDestinationMs: g.timestamp_child,
-        durationMs: g.duration_ms,
-        sampleType: g.sample_type,
-        pitchShiftSemitones: g.pitch_shift_semitones,
-        tempoRatio: g.tempo_ratio,
-        isReversed: g.is_reversed,
-        isLooped: g.is_looped,
-      })),
-      provenance: {
-        sources: e.source_names,
-        sourceKinds: e.source_kinds,
-        assertionCount: e.assertion_count,
-        isVerified: e.is_verified,
-        isInference: e.is_inference,
-        confidence: e.confidence,
-        evidenceExcerpt: e.evidence_excerpt,
-        evidenceUrl: e.evidence_url,
+  return new Map(
+    edges.map((e) => [
+      e.id,
+      {
+        id: e.canonical_id,
+        relationshipType: e.relationship_type,
+        source: summaries.get(e.parent_track_id)!,
+        destination: summaries.get(e.child_track_id)!,
+        notes: e.notes,
+        segments: (segments.get(e.id) ?? []).map((g) => ({
+          element: g.element,
+          atInSourceMs: g.timestamp_parent,
+          atInDestinationMs: g.timestamp_child,
+          durationMs: g.duration_ms,
+          sampleType: g.sample_type,
+          pitchShiftSemitones: g.pitch_shift_semitones,
+          tempoRatio: g.tempo_ratio,
+          isReversed: g.is_reversed,
+          isLooped: g.is_looped,
+        })),
+        provenance: {
+          sources: e.source_names,
+          sourceKinds: e.source_kinds,
+          assertionCount: e.assertion_count,
+          isVerified: e.is_verified,
+          isInference: e.is_inference,
+          confidence: e.confidence,
+          evidenceExcerpt: e.evidence_excerpt,
+          evidenceUrl: e.evidence_url,
+        },
       },
-    });
+    ]),
+  );
+}
+
+/** Everything the song takes from and everything that takes from it. */
+export async function relationships(db: Db, rootIds: number[], limit: number): Promise<Relationships> {
+  const chosen = await chooseRelated(db, new Map([[0, rootIds]]), ["sources", "derivatives"], limit);
+  const loaded = await loadRelationships(db, chosen.map((c) => c.edge_id));
+  const result: Relationships = { sources: { total: 0, items: [] }, derivatives: { total: 0, items: [] } };
+  for (const c of chosen) {
+    result[c.direction].total = c.total;
+    result[c.direction].items.push(loaded.get(c.edge_id)!);
   }
   return result;
+}
+
+// --- lineage ------------------------------------------------------------------
+
+type PendingNode = {
+  id: string;
+  parentId: string | null;
+  depth: number;
+  trackId: number;
+  edgeId: number | null;
+  /** Track ids of this node's song and of every ancestor's. */
+  path: Set<number>;
+  children: PendingNode[];
+  hiddenChildCount: number;
+  isCycle: boolean;
+};
+
+export type LineageOptions = {
+  direction: Direction;
+  maxDepth: number;
+  rootLimit: number;
+  childLimit: number;
+  maxNodes: number;
+};
+
+/**
+ * The song's lineage as a tree, built a generation at a time. Mirrors Sinc's
+ * LineageBuilder: the root shows up to rootLimit relationships and every
+ * other node up to childLimit, with the rest counted in hiddenChildCount;
+ * a song already on the path back to the root becomes a leaf marked isCycle;
+ * film, TV, comedy, and speech sources are leaves. maxNodes bounds the whole
+ * tree, and `truncated` says whether it cut anything.
+ */
+export async function lineage(db: Db, trackId: number, options: LineageOptions): Promise<Lineage> {
+  const root: PendingNode = {
+    id: "0",
+    parentId: null,
+    depth: 0,
+    trackId,
+    edgeId: null,
+    path: new Set(),
+    children: [],
+    hiddenChildCount: 0,
+    isCycle: false,
+  };
+  const kinds = new Map<number, TrackKind>();
+  const kindOf = async (ids: number[]) => {
+    const unknown = ids.filter((id) => !kinds.has(id));
+    if (!unknown.length) return;
+    for (const r of await rows<{ id: number; kind: TrackKind }>(db, sql`
+      SELECT id, kind FROM tracks WHERE id = ANY(${intArray(unknown)})`)) {
+      kinds.set(r.id, r.kind);
+    }
+  };
+
+  let nodeCount = 1;
+  let truncated = false;
+  let generation = [root];
+  await kindOf([trackId]);
+  for (let depth = 0; depth <= options.maxDepth && generation.length; depth++) {
+    const expanding = generation.filter((n) => !n.isCycle && kinds.get(n.trackId) === "song");
+    const roots = await songRoots(db, new Map(expanding.map((n, i) => [i, [n.trackId]])));
+    expanding.forEach((n, i) => {
+      for (const id of roots.get(i)!) n.path.add(id);
+    });
+    const limit = depth === 0 ? options.rootLimit : options.childLimit;
+    // At the last generation only the counts matter, but a row is needed to carry one.
+    const chosen = await chooseRelated(db, roots, [options.direction], Math.max(limit, 1));
+    const byNode = Map.groupBy(chosen, (c) => c.key);
+    await kindOf(chosen.map((c) => c.other_id));
+
+    const next: PendingNode[] = [];
+    expanding.forEach((node, i) => {
+      const related = byNode.get(i) ?? [];
+      const total = related[0]?.total ?? 0;
+      if (depth === options.maxDepth) {
+        node.hiddenChildCount = total;
+        return;
+      }
+      const room = Math.max(0, options.maxNodes - nodeCount);
+      const shown = related.slice(0, Math.min(limit, room));
+      if (shown.length < Math.min(total, limit)) truncated = true;
+      node.hiddenChildCount = total - shown.length;
+      for (const [index, c] of shown.entries()) {
+        const child: PendingNode = {
+          id: `${node.id}.${index}`,
+          parentId: node.id,
+          depth: depth + 1,
+          trackId: c.other_id,
+          edgeId: c.edge_id,
+          path: new Set(node.path),
+          children: [],
+          hiddenChildCount: 0,
+          isCycle: node.path.has(c.other_id),
+        };
+        node.children.push(child);
+        next.push(child);
+      }
+      nodeCount += shown.length;
+    });
+    generation = next;
+  }
+
+  const ordered: PendingNode[] = [];
+  const visit = (n: PendingNode) => {
+    ordered.push(n);
+    n.children.forEach(visit);
+  };
+  visit(root);
+  const [summaries, loaded] = await Promise.all([
+    trackSummaries(db, ordered.map((n) => n.trackId)),
+    loadRelationships(db, ordered.flatMap((n) => (n.edgeId === null ? [] : [n.edgeId]))),
+  ]);
+  return {
+    direction: options.direction,
+    truncated,
+    nodes: ordered.map((n) => ({
+      id: n.id,
+      parentId: n.parentId,
+      depth: n.depth,
+      track: summaries.get(n.trackId)!,
+      relationship: n.edgeId === null ? null : loaded.get(n.edgeId)!,
+      hiddenChildCount: n.hiddenChildCount,
+      isCycle: n.isCycle,
+    })),
+  };
 }
 
 /**

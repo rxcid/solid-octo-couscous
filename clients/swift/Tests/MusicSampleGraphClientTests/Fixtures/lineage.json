@@ -1,0 +1,203 @@
+{
+  "url": "/v1/tracks/node_66db7eb79000316763e6c8344787137343a0ee9538c2d6d918020a761a24ed89/lineage",
+  "status": 200,
+  "body": {
+    "direction": "sources",
+    "truncated": false,
+    "nodes": [
+      {
+        "id": "0",
+        "parentId": null,
+        "depth": 0,
+        "track": {
+          "id": "node_66db7eb79000316763e6c8344787137343a0ee9538c2d6d918020a761a24ed89",
+          "kind": "song",
+          "title": "Late Echo",
+          "artistCredit": "The Revival",
+          "releaseYear": 2005,
+          "isrc": null,
+          "musicbrainzRecordingId": null
+        },
+        "relationship": null,
+        "hiddenChildCount": 0,
+        "isCycle": false
+      },
+      {
+        "id": "0.0",
+        "parentId": "0",
+        "depth": 1,
+        "track": {
+          "id": "node_mb_00000000-0000-4000-8000-00000000000c",
+          "kind": "song",
+          "title": "City Anthem (Radio Edit)",
+          "artistCredit": "MC Example",
+          "releaseYear": 1988,
+          "isrc": null,
+          "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000c"
+        },
+        "relationship": {
+          "id": "edge_4_6_interpolated",
+          "relationshipType": "interpolated",
+          "source": {
+            "id": "node_mb_00000000-0000-4000-8000-00000000000c",
+            "kind": "song",
+            "title": "City Anthem (Radio Edit)",
+            "artistCredit": "MC Example",
+            "releaseYear": 1988,
+            "isrc": null,
+            "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000c"
+          },
+          "destination": {
+            "id": "node_66db7eb79000316763e6c8344787137343a0ee9538c2d6d918020a761a24ed89",
+            "kind": "song",
+            "title": "Late Echo",
+            "artistCredit": "The Revival",
+            "releaseYear": 2005,
+            "isrc": null,
+            "musicbrainzRecordingId": null
+          },
+          "notes": null,
+          "segments": [],
+          "provenance": {
+            "sources": [
+              "writer_credits"
+            ],
+            "sourceKinds": [
+              "writer_credit_inference"
+            ],
+            "assertionCount": 1,
+            "isVerified": false,
+            "isInference": true,
+            "confidence": null,
+            "evidenceExcerpt": null,
+            "evidenceUrl": null
+          }
+        },
+        "hiddenChildCount": 0,
+        "isCycle": false
+      },
+      {
+        "id": "0.0.0",
+        "parentId": "0.0",
+        "depth": 2,
+        "track": {
+          "id": "node_mb_00000000-0000-4000-8000-00000000000a",
+          "kind": "song",
+          "title": "Funky Break",
+          "artistCredit": "The Originals",
+          "releaseYear": 1969,
+          "isrc": "USAAA6900001",
+          "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000a"
+        },
+        "relationship": {
+          "id": "edge_1_3_sampled",
+          "relationshipType": "sampled",
+          "source": {
+            "id": "node_mb_00000000-0000-4000-8000-00000000000a",
+            "kind": "song",
+            "title": "Funky Break",
+            "artistCredit": "The Originals",
+            "releaseYear": 1969,
+            "isrc": "USAAA6900001",
+            "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000a"
+          },
+          "destination": {
+            "id": "node_mb_00000000-0000-4000-8000-00000000000b",
+            "kind": "song",
+            "title": "City Anthem",
+            "artistCredit": "MC Example",
+            "releaseYear": 1988,
+            "isrc": "USBBB8800001",
+            "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000b"
+          },
+          "notes": null,
+          "segments": [
+            {
+              "element": "drums (drum set)",
+              "atInSourceMs": 85000,
+              "atInDestinationMs": 0,
+              "durationMs": 4000,
+              "sampleType": "looped",
+              "pitchShiftSemitones": null,
+              "tempoRatio": null,
+              "isReversed": null,
+              "isLooped": true
+            }
+          ],
+          "provenance": {
+            "sources": [
+              "curated",
+              "musicbrainz"
+            ],
+            "sourceKinds": [
+              "community_database",
+              "human_curated"
+            ],
+            "assertionCount": 2,
+            "isVerified": true,
+            "isInference": false,
+            "confidence": null,
+            "evidenceExcerpt": "Liner notes credit the break.",
+            "evidenceUrl": "https://example.org/liner-notes"
+          }
+        },
+        "hiddenChildCount": 0,
+        "isCycle": false
+      },
+      {
+        "id": "0.1",
+        "parentId": "0",
+        "depth": 1,
+        "track": {
+          "id": "node_050ca4af1ec765dfeea90379e0048e5fc27153ccef0a7b9868aa639af4228e99",
+          "kind": "song",
+          "title": "Funky Break Pt. 1",
+          "artistCredit": "The Originals",
+          "releaseYear": 1969,
+          "isrc": "USAAA6900001",
+          "musicbrainzRecordingId": null
+        },
+        "relationship": {
+          "id": "edge_2_6_sampled",
+          "relationshipType": "sampled",
+          "source": {
+            "id": "node_050ca4af1ec765dfeea90379e0048e5fc27153ccef0a7b9868aa639af4228e99",
+            "kind": "song",
+            "title": "Funky Break Pt. 1",
+            "artistCredit": "The Originals",
+            "releaseYear": 1969,
+            "isrc": "USAAA6900001",
+            "musicbrainzRecordingId": null
+          },
+          "destination": {
+            "id": "node_66db7eb79000316763e6c8344787137343a0ee9538c2d6d918020a761a24ed89",
+            "kind": "song",
+            "title": "Late Echo",
+            "artistCredit": "The Revival",
+            "releaseYear": 2005,
+            "isrc": null,
+            "musicbrainzRecordingId": null
+          },
+          "notes": null,
+          "segments": [],
+          "provenance": {
+            "sources": [
+              "musicbrainz"
+            ],
+            "sourceKinds": [
+              "community_database"
+            ],
+            "assertionCount": 1,
+            "isVerified": false,
+            "isInference": false,
+            "confidence": null,
+            "evidenceExcerpt": null,
+            "evidenceUrl": null
+          }
+        },
+        "hiddenChildCount": 0,
+        "isCycle": false
+      }
+    ]
+  }
+}

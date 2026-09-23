@@ -1,0 +1,10 @@
+{
+  "url": "/v1/tracks/node_unknown",
+  "status": 404,
+  "body": {
+    "error": {
+      "code": "track_not_found",
+      "message": "No track with id node_unknown"
+    }
+  }
+}

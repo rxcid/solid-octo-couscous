@@ -9,6 +9,7 @@
  *   City Anthem (Radio Edit) ─interpolated─▶ Late Echo   inferred from writer credits
  *   City Anthem ──remixed──▶ City Anthem (Radio Edit)    inside one song: never served
  *   Famous Speech ──sampled──▶ Night Drive          a speech source
+ *   Loop One ◀──sampled──▶ Loop Two                 each samples the other: a cycle
  */
 import type { TrackKind } from "../catalog/identity.js";
 import { normalize, textIdentity } from "../catalog/identity.js";
@@ -180,6 +181,10 @@ export async function seedCatalog(db: Db) {
   await edge(db, speech, nightDrive, {
     claims: [{ sourceName: "curated", sourceKind: "human_curated", verificationStatus: "verified" }],
   });
+  const loopOne = await track(db, { title: "Loop One", artist: "Circle", year: 2010 });
+  const loopTwo = await track(db, { title: "Loop Two", artist: "Circle", year: 2011 });
+  await edge(db, loopOne, loopTwo, { claims: [musicbrainz] });
+  await edge(db, loopTwo, loopOne, { claims: [musicbrainz] });
 
   const id = (t: s.Track) => t.canonicalId;
   return {
@@ -191,5 +196,6 @@ export async function seedCatalog(db: Db) {
     lateEcho: id(lateEcho),
     unreviewed: id(unreviewed),
     speech: id(speech),
+    loopOne: id(loopOne),
   };
 }

@@ -3,7 +3,9 @@ import { Type } from "typebox";
 import * as catalog from "../catalog/repository.js";
 import type { Db } from "../db/client.js";
 import {
+  Direction,
   ErrorBody,
+  Lineage,
   Relationships,
   Resolution,
   ResolveQuery,
@@ -19,9 +21,11 @@ const notFound = (id: string) => ({
   error: { code: "track_not_found", message: `No track with id ${id}` },
 });
 
+// operationId names each operation in generated clients, so keep them stable.
 export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => {
   app.get("/tracks/resolve", {
     schema: {
+      operationId: "resolveTrack",
       tags: ["tracks"],
       summary: "Find the catalog recordings for a recognized song",
       description:
@@ -44,6 +48,7 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
 
   app.get("/tracks/:id", {
     schema: {
+      operationId: "getTrack",
       tags: ["tracks"],
       summary: "A track, its credits, and its other versions",
       params: TrackParams,
@@ -57,6 +62,7 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
 
   app.get("/tracks/:id/relationships", {
     schema: {
+      operationId: "getRelationships",
       tags: ["tracks"],
       summary: "What the song takes from, and what takes from it",
       description:
@@ -75,8 +81,34 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
     return catalog.relationships(db, root, request.query.limit);
   });
 
+  app.get("/tracks/:id/lineage", {
+    schema: {
+      operationId: "getLineage",
+      tags: ["tracks"],
+      summary: "The song's lineage, generation by generation",
+      description:
+        "A tree of relationships from the song outward, as Sinc's lineage view builds it: sources by " +
+        "default (what it samples, what those sample, and so on), or derivatives. Nodes come depth-first " +
+        "with parentId set, so a client can rebuild the tree in one pass.",
+      params: TrackParams,
+      querystring: Type.Object({
+        direction: Type.Optional(Direction),
+        depth: Type.Integer({ minimum: 1, maximum: 5, default: 3, description: "Generations below the root." }),
+        rootLimit: Type.Integer({ minimum: 1, maximum: 50, default: 10, description: "Children shown under the root." }),
+        childLimit: Type.Integer({ minimum: 1, maximum: 20, default: 4, description: "Children shown under any other node." }),
+      }),
+      response: { 200: Lineage, ...errors },
+    },
+  }, async (request, reply) => {
+    const trackId = await catalog.findTrackId(db, request.params.id);
+    if (trackId === null) return reply.code(404).send(notFound(request.params.id));
+    const { direction = "sources", depth, rootLimit, childLimit } = request.query;
+    return catalog.lineage(db, trackId, { direction, maxDepth: depth, rootLimit, childLimit, maxNodes: 500 });
+  });
+
   app.get("/tracks/:id/siblings", {
     schema: {
+      operationId: "getSiblings",
       tags: ["tracks"],
       summary: "Other songs built from the same sources",
       description: "Grouped by shared source, busiest first. `total` counts every song before trimming.",
@@ -85,7 +117,10 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
         perSource: Type.Integer({ minimum: 1, maximum: 100, default: 12 }),
         sources: Type.Integer({ minimum: 1, maximum: 20, default: 4 }),
       }),
-      response: { 200: Type.Object({ groups: Type.Array(SiblingGroup) }), ...errors },
+      response: {
+        200: Type.Object({ groups: Type.Array(SiblingGroup) }, { title: "Siblings" }),
+        ...errors,
+      },
     },
   }, async (request, reply) => {
     const trackId = await catalog.findTrackId(db, request.params.id);
@@ -96,6 +131,7 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
 
   app.get("/search", {
     schema: {
+      operationId: "searchTracks",
       tags: ["search"],
       summary: "Search songs by title and artist",
       description: 'Every word must appear in the title or artist, so "juicy notorious" works. One recording per song.',
@@ -103,7 +139,10 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
         q: Type.String({ minLength: 1, maxLength: 200 }),
         limit: Type.Integer({ minimum: 1, maximum: 100, default: 24 }),
       }),
-      response: { 200: Type.Object({ tracks: Type.Array(TrackSummary) }), ...errors },
+      response: {
+        200: Type.Object({ tracks: Type.Array(TrackSummary) }, { title: "SearchResults" }),
+        ...errors,
+      },
     },
   }, async (request) => ({
     tracks: await catalog.search(db, request.query.q, request.query.limit),
