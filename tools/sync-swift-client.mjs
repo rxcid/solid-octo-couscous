@@ -21,7 +21,9 @@ const expectedGenerated = [
 
 function files(dir, prefix = "") {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  // Finder (.DS_Store) and editors leave hidden files beside the package;
+  // no package file is hidden, so they are never part of the comparison.
+  return readdirSync(dir, { withFileTypes: true }).filter((entry) => !entry.name.startsWith(".")).flatMap((entry) => {
     const name = join(prefix, entry.name);
     return entry.isDirectory() ? files(join(dir, entry.name), name) : [name];
   }).sort();
