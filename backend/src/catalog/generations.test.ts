@@ -8,7 +8,7 @@ import { buildApp } from "../app.js";
 import type { Db } from "../db/client.js";
 import { env } from "../env.js";
 import { setupTestDb } from "../test/database.js";
-import { generations } from "./generations.js";
+import { type GenerationsRecord, chronological, generations, scalarOrder } from "./generations.js";
 
 const fixturePath = join(import.meta.dirname, "__fixtures__", "generations_vectors.json");
 const sincDir = process.env.SINC_DIR ?? resolve(import.meta.dirname, "../../../../Sincapp");
@@ -83,5 +83,35 @@ describe("GenerationsBuilder parity", {
     const response = await app.inject({ method: "GET", url: "/v1/tracks/node_unknown/generations" });
     assert.equal(response.statusCode, 404);
     assert.equal(response.json().error.code, "track_not_found");
+  });
+});
+
+describe("Generations record order", () => {
+  const record = (id: string, title: string, earliestYear: number | null): GenerationsRecord => ({
+    id, earliestYear, handoffTypes: [], connectedTitles: [], alsoFromTitles: [],
+    track: { title, artist: "", year: earliestYear, kind: "song", isrc: null, musicBrainzRecordingID: null,
+      catalogRecordingID: id },
+  });
+  const order = (records: GenerationsRecord[]) => [...records].sort(chronological).map((r) => r.id);
+
+  it("puts records of one year in title order, as Swift does", () => {
+    // v17 dates most records, so equal years are common: Juicy's family had
+    // "Let It Go (remix)" ahead of "Let It Go" before this was fixed.
+    const remix = record("2|let it go remix", "Let It Go (remix)", 2007);
+    const original = record("1|let it go", "Let It Go", 2007);
+    assert.deepEqual(order([remix, original]), ["1|let it go", "2|let it go remix"]);
+    assert.deepEqual(order([original, remix]), ["1|let it go", "2|let it go remix"]);
+  });
+
+  it("puts dated records first, oldest first, and undated ones by title", () => {
+    const records = [record("a", "Zed", null), record("b", "Alpha", null), record("c", "Mid", 1990),
+      record("d", "Early", 1971), record("e", "Also 1990", 1990)];
+    assert.deepEqual(order(records), ["d", "e", "c", "b", "a"]);
+  });
+
+  it("breaks a title tie by comparing ids as Swift strings", () => {
+    // A locale collation would put "15|x" first; Swift's String < compares scalars.
+    assert.deepEqual(order([record("15|x", "Intro", null), record("155|x", "Intro", null)]), ["155|x", "15|x"]);
+    assert.ok(scalarOrder("-7|x", "12|x") < 0);
   });
 });

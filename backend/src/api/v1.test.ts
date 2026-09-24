@@ -155,8 +155,9 @@ describe("GET /v1/tracks/:id/generations", () => {
     assert.equal(family.root.track.title, "Funky Break");
     assert.deepEqual(family.generations.map((g) => [g.role, g.offset]),
       [["thisSong", 0], ["after", 1], ["after", 2]]);
+    // Both City Anthem pressings date from 1988, so Swift orders them by title.
     assert.deepEqual(family.generations[1]!.records.map((r) => r.track.title),
-      ["City Anthem (Radio Edit)", "City Anthem", "Night Drive"]);
+      ["City Anthem", "City Anthem (Radio Edit)", "Night Drive"]);
     const candidate = await get<{ generations: { role: string }[] }>(`/v1/tracks/${ids.unreviewed}/generations`);
     assert.deepEqual(candidate.generations.map((g) => g.role), ["thisSong"]);
   });

@@ -75,14 +75,27 @@ async function loadRecordings(db: Db, where: ReturnType<typeof sql>): Promise<Re
     clusterID: Number(r.clusterID), year: r.year === null ? null : Number(r.year) }));
 }
 
+// Swift's localizedCaseInsensitiveCompare in an English locale. Across every
+// catalog title the two orders differ only around "ß", which Foundation
+// compares inconsistently ("Außer" equals "Ausser" yet sorts after "Aust"),
+// so there is no single Swift order to copy there. Other device locales sort
+// differently offline (sv_SE moves Å, Ä and Æ); the server keeps English.
 const titleCollator = new Intl.Collator("en", { sensitivity: "accent" });
 const titleOrder = (a: string, b: string) => titleCollator.compare(a, b);
-const chronological = (a: GenerationsRecord, b: GenerationsRecord) => {
+/** Swift's String `<`: Unicode scalars of the NFC form, not a locale collation. */
+export const scalarOrder = (a: string, b: string) => {
+  const left = [...a.normalize("NFC")].map((c) => c.codePointAt(0)!);
+  const right = [...b.normalize("NFC")].map((c) => c.codePointAt(0)!);
+  for (let i = 0; i < Math.min(left.length, right.length); i++) if (left[i] !== right[i]) return left[i]! - right[i]!;
+  return left.length - right.length;
+};
+/** Oldest first, undated last, then by title and id, as Generations.swift's chronological. */
+export const chronological = (a: GenerationsRecord, b: GenerationsRecord) => {
   if (a.earliestYear !== null && b.earliestYear !== null && a.earliestYear !== b.earliestYear)
     return a.earliestYear - b.earliestYear;
-  if (a.earliestYear !== null) return -1;
-  if (b.earliestYear !== null) return 1;
-  return titleOrder(a.track.title, b.track.title) || a.id.localeCompare(b.id);
+  if (a.earliestYear !== null && b.earliestYear === null) return -1;
+  if (a.earliestYear === null && b.earliestYear !== null) return 1;
+  return titleOrder(a.track.title, b.track.title) || scalarOrder(a.id, b.id);
 };
 const track = (r: Recording): Track => ({ title: r.title, artist: r.artist, year: r.year,
   kind: r.kind, isrc: r.isrc, musicBrainzRecordingID: r.musicBrainzRecordingID,
