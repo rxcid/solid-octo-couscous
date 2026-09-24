@@ -25,16 +25,21 @@ public struct SampleGraphClient: Sendable {
 
     /// The catalog recordings for a recognized song.
     ///
-    /// An ISRC match wins; otherwise every recording with the same normalized
-    /// title, artist, and kind matches. Pass an ISRC, or a title and an
-    /// artist. An empty `tracks` means the catalog doesn't have the song.
+    /// Follows Sinc's bundled lookup: catalog id, then ISRC and MusicBrainz
+    /// id, then title and artist. Known aliases are a last stage that only the
+    /// online catalog has. An empty `tracks` means the catalog doesn't have
+    /// the song.
     public func resolve(
+        canonicalId: String? = nil,
         isrc: String? = nil,
+        mbid: String? = nil,
         title: String? = nil,
         artist: String? = nil,
         kind: Components.Schemas.TrackKind = .song
     ) async throws -> Components.Schemas.Resolution {
-        switch try await client.resolveTrack(query: .init(isrc: isrc, title: title, artist: artist, kind: kind)) {
+        switch try await client.resolveTrack(query: .init(
+            canonicalId: canonicalId, isrc: isrc, mbid: mbid, title: title, artist: artist, kind: kind
+        )) {
         case .ok(let response): return try response.body.json
         case .badRequest(let response): throw SampleGraphError(400, try? response.body.json)
         case .notFound(let response): throw SampleGraphError(404, try? response.body.json)

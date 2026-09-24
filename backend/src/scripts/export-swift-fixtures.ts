@@ -23,6 +23,7 @@ const app = await buildApp({ db, corsOrigin: "*", logger: false });
 // URLs as the Swift client builds them: declared parameter order, unset ones left out.
 const recordings: Record<string, string> = {
   resolve: "/v1/tracks/resolve?isrc=USAAA6900001&kind=song",
+  "resolve-mbid": "/v1/tracks/resolve?mbid=00000000-0000-4000-8000-00000000000c&kind=song",
   "resolve-invalid": "/v1/tracks/resolve?title=Night%20Drive&kind=song",
   track: `/v1/tracks/${ids.funkyBreak}`,
   "track-not-found": "/v1/tracks/node_unknown",

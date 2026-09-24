@@ -225,7 +225,9 @@ export const GenerationsFamily = Type.Object({
 }, { title: "GenerationsFamily" });
 
 export const ResolveQuery = Type.Object({
+  canonicalId: Type.Optional(TrackId),
   isrc: Type.Optional(Type.String({ maxLength: 64 })),
+  mbid: Type.Optional(Type.String({ maxLength: 64, description: "MusicBrainz recording id." })),
   title: Type.Optional(Type.String({ maxLength: 500 })),
   artist: Type.Optional(Type.String({ maxLength: 500 })),
   kind: Type.Optional(TrackKind),
@@ -233,7 +235,7 @@ export const ResolveQuery = Type.Object({
 
 export const Resolution = Type.Object(
   {
-    matchedBy: Nullable(StringEnum(["isrc", "title_artist"], { title: "MatchMethod" })),
+    matchedBy: Nullable(StringEnum(["canonical_id", "isrc", "mbid", "title_artist", "alias"], { title: "MatchMethod" })),
     tracks: Type.Array(TrackSummary, { description: "Every recording that matched. Empty when the catalog has none." }),
   },
   { title: "Resolution" },

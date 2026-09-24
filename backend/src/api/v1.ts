@@ -31,19 +31,21 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
       tags: ["tracks"],
       summary: "Find the catalog recordings for a recognized song",
       description:
-        "Pass what recognition returned. An ISRC match wins; otherwise every recording with the same " +
-        "normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.",
+        "Pass a catalog id, ISRC, MusicBrainz recording id, or title and artist. The first stages are " +
+        "Sinc's bundled lookup: canonical id, then the union of ISRC and MusicBrainz matches, then " +
+        "normalized title and artist. Known title and artist aliases are a last exact stage that only " +
+        "the online catalog has.",
       querystring: ResolveQuery,
       response: { 200: Resolution, ...errors },
     },
   }, async (request, reply) => {
-    const { isrc, title, artist, kind = "song" } = request.query;
-    if (!isrc && !(title && artist)) {
+    const { canonicalId, isrc, mbid, title, artist, kind = "song" } = request.query;
+    if (!canonicalId && !isrc && !mbid && !(title && artist)) {
       return reply.code(400).send({
-        error: { code: "invalid_request", message: "Pass isrc, or both title and artist." },
+        error: { code: "invalid_request", message: "Pass canonicalId, isrc, mbid, or both title and artist." },
       });
     }
-    const { matchedBy, trackIds } = await catalog.resolveTracks(db, { isrc, title, artist, kind });
+    const { matchedBy, trackIds } = await catalog.resolveTracks(db, { canonicalId, isrc, mbid, title, artist, kind });
     const summaries = await catalog.trackSummaries(db, trackIds);
     return { matchedBy, tracks: trackIds.map((id) => summaries.get(id)!) };
   });

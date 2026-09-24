@@ -113,6 +113,13 @@ export async function seedCatalog(db: Db) {
     mbid: "00000000-0000-4000-8000-00000000000c",
   });
   const nightDrive = await track(db, { title: "Night Drive", artist: "DJ Sample", year: 1990 });
+  // One alias collides with a primary title: the primary spelling must win.
+  await db.insert(s.trackAliases).values([
+    { trackId: funkyBreak.id, title: "Break Beat", artistCredit: "The Originals",
+      normTitle: normalize("Break Beat"), normArtist: normalize("The Originals"), source: "fixture" },
+    { trackId: funkyBreak.id, title: "Night Drive", artistCredit: "DJ Sample",
+      normTitle: normalize("Night Drive"), normArtist: normalize("DJ Sample"), source: "fixture" },
+  ]);
   const lateEcho = await track(db, { title: "Late Echo", artist: "The Revival", year: 2005 });
   const unreviewed = await track(db, { title: "Unreviewed Claim", artist: "Somebody", year: 2020 });
   const speech = await track(db, { title: "Famous Speech", artist: "A Speaker", year: 1963, kind: "speech" });

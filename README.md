@@ -48,8 +48,15 @@ so check `backend/.env` before using it.
 The main routes are `GET /v1/tracks/resolve`, `/v1/tracks/:id`,
 `/v1/tracks/:id/relationships`, `/v1/tracks/:id/siblings`,
 `/v1/tracks/:id/lineage`, `/v1/tracks/:id/generations`, and `/v1/search`.
-The `resolve` endpoint currently matches ISRC and normalized title/artist;
-MusicBrainz recording IDs, aliases, and fuzzy matching remain planned work.
+The `resolve` endpoint checks a catalog id first, then the union of ISRC and
+MusicBrainz recording ID matches, then normalized title and artist, as Sinc's
+bundled lookup does. Known title/artist aliases are a last exact stage that only
+the online catalog has; the app never reads its aliases. It returns every
+matching recording at the first successful stage. Fuzzy matching remains
+disabled: Sinc's fallback accepts only
+whole-word artist variants and title differences made of version qualifiers
+or years. `pg_trgm` thresholds need catalog-based tuning before enabling it;
+the bundled catalog handles online misses in the meantime.
 
 ## Verify changes
 

@@ -13,7 +13,7 @@ public import struct Foundation.Date
 public protocol APIProtocol: Sendable {
     /// Find the catalog recordings for a recognized song
     ///
-    /// Pass what recognition returned. An ISRC match wins; otherwise every recording with the same normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.
+    /// Pass a catalog id, ISRC, MusicBrainz recording id, or title and artist. The first stages are Sinc's bundled lookup: canonical id, then the union of ISRC and MusicBrainz matches, then normalized title and artist. Known title and artist aliases are a last exact stage that only the online catalog has.
     ///
     /// - Remark: HTTP `GET /v1/tracks/resolve`.
     /// - Remark: Generated from `#/paths//v1/tracks/resolve/get(resolveTrack)`.
@@ -64,7 +64,7 @@ public protocol APIProtocol: Sendable {
 extension APIProtocol {
     /// Find the catalog recordings for a recognized song
     ///
-    /// Pass what recognition returned. An ISRC match wins; otherwise every recording with the same normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.
+    /// Pass a catalog id, ISRC, MusicBrainz recording id, or title and artist. The first stages are Sinc's bundled lookup: canonical id, then the union of ISRC and MusicBrainz matches, then normalized title and artist. Known title and artist aliases are a last exact stage that only the online catalog has.
     ///
     /// - Remark: HTTP `GET /v1/tracks/resolve`.
     /// - Remark: Generated from `#/paths//v1/tracks/resolve/get(resolveTrack)`.

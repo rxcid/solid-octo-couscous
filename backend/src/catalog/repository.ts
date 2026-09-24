@@ -2,7 +2,7 @@
  * Catalog reads behind the v1 API. Each mirrors a SampleDatabase query in
  * Sinc's Models.swift, so the online app answers as the offline one does:
  *
- *   resolveTracks   -> the identity_root/matched_root CTEs
+ *   resolveTracks   -> generationsRoots, plus known title/artist aliases
  *   songRoot        -> the root CTE
  *   relationships   -> musicDNARelationships
  *   lineage         -> lineage (LineageBuilder in Lineage.swift)
@@ -40,22 +40,37 @@ async function rows<T>(db: Db, query: SQL): Promise<T[]> {
 // --- identity ---------------------------------------------------------------
 
 /**
- * The recordings a recognition result names. An ISRC match wins outright;
- * otherwise every recording with the same normalized title, artist, and kind
- * matches, since pressings of one song often share them.
+ * Resolve like Sinc's generationsRoots: canonical id first, then the union of
+ * ISRC and MusicBrainz recording matches, then normalized title and artist.
+ * An identifier match is independent of kind, as it is in Sinc. The alias
+ * stage is the online catalog's own addition: the app never reads
+ * node_aliases, so a spelling the catalog knows only as an alias finds a song
+ * online that the bundled catalog cannot.
  */
 export async function resolveTracks(
   db: Db,
-  input: { isrc?: string; title?: string; artist?: string; kind: TrackKind },
+  input: { canonicalId?: string; isrc?: string; mbid?: string; title?: string; artist?: string; kind: TrackKind },
 ): Promise<{ matchedBy: Resolution["matchedBy"]; trackIds: number[] }> {
-  const isrc = input.isrc ? normalizeIdentifier(input.isrc) : "";
-  if (isrc) {
-    const byIsrc = await rows<{ id: number }>(db, sql`
-      SELECT DISTINCT track_id AS id FROM track_identifiers
-      WHERE namespace = 'isrc' AND identifier = ${isrc}
-      ORDER BY id`);
-    if (byIsrc.length) return { matchedBy: "isrc", trackIds: byIsrc.map((r) => r.id) };
+  if (input.canonicalId) {
+    const id = await findTrackId(db, input.canonicalId);
+    if (id !== null) return { matchedBy: "canonical_id", trackIds: [id] };
   }
+
+  const isrc = input.isrc ? normalizeIdentifier(input.isrc) : "";
+  const mbid = input.mbid?.toLowerCase() ?? "";
+  if (isrc || mbid) {
+    const byIdentifier = await rows<{ id: number; has_isrc: boolean }>(db, sql`
+      SELECT track_id AS id, bool_or(namespace = 'isrc') AS has_isrc
+      FROM track_identifiers
+      WHERE (namespace = 'isrc' AND identifier = ${isrc} AND ${isrc} <> '')
+         OR (namespace = 'musicbrainz_recording' AND identifier = ${mbid} AND ${mbid} <> '')
+      GROUP BY track_id ORDER BY track_id`);
+    if (byIdentifier.length) return {
+      matchedBy: byIdentifier.some((r) => r.has_isrc) ? "isrc" : "mbid",
+      trackIds: byIdentifier.map((r) => r.id),
+    };
+  }
+
   const title = normalize(input.title ?? "");
   const artist = normalize(input.artist ?? "");
   if (title && artist) {
@@ -64,6 +79,13 @@ export async function resolveTracks(
       WHERE norm_title = ${title} AND norm_artist = ${artist} AND kind = ${input.kind}
       ORDER BY id`);
     if (byText.length) return { matchedBy: "title_artist", trackIds: byText.map((r) => r.id) };
+
+    const byAlias = await rows<{ id: number }>(db, sql`
+      SELECT DISTINCT t.id FROM track_aliases a
+      JOIN tracks t ON t.id = a.track_id
+      WHERE a.norm_title = ${title} AND a.norm_artist = ${artist} AND t.kind = ${input.kind}
+      ORDER BY t.id`);
+    if (byAlias.length) return { matchedBy: "alias", trackIds: byAlias.map((r) => r.id) };
   }
   return { matchedBy: null, trackIds: [] };
 }

@@ -396,8 +396,11 @@
       },
       "MatchMethod": {
         "enum": [
+          "canonical_id",
           "isrc",
-          "title_artist"
+          "mbid",
+          "title_artist",
+          "alias"
         ],
         "title": "MatchMethod",
         "type": "string"
@@ -820,8 +823,18 @@
         "tags": [
           "tracks"
         ],
-        "description": "Pass what recognition returned. An ISRC match wins; otherwise every recording with the same normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.",
+        "description": "Pass a catalog id, ISRC, MusicBrainz recording id, or title and artist. The first stages are Sinc's bundled lookup: canonical id, then the union of ISRC and MusicBrainz matches, then normalized title and artist. Known title and artist aliases are a last exact stage that only the online catalog has.",
         "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "query",
+            "name": "canonicalId",
+            "required": false,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          },
           {
             "schema": {
               "type": "string",
@@ -830,6 +843,16 @@
             "in": "query",
             "name": "isrc",
             "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            },
+            "in": "query",
+            "name": "mbid",
+            "required": false,
+            "description": "MusicBrainz recording id."
           },
           {
             "schema": {

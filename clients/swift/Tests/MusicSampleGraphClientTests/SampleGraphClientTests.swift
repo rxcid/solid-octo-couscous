@@ -17,6 +17,12 @@ private func client(_ recording: String) throws -> SampleGraphClient {
         #expect(resolution.tracks[1].musicbrainzRecordingId == nil)
     }
 
+    @Test func resolvesAMusicBrainzRecordingID() async throws {
+        let resolution = try await client("resolve-mbid").resolve(mbid: "00000000-0000-4000-8000-00000000000c")
+        #expect(resolution.matchedBy == .mbid)
+        #expect(resolution.tracks.map(\.title) == ["City Anthem (Radio Edit)"])
+    }
+
     @Test func decodesATrackWithItsCreditsAndVersions() async throws {
         let track = try await client("track").track(id: "node_mb_00000000-0000-4000-8000-00000000000a")
         #expect(track.kind == .song)

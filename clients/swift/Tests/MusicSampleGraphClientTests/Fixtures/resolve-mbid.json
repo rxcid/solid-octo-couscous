@@ -1,0 +1,18 @@
+{
+  "url": "/v1/tracks/resolve?mbid=00000000-0000-4000-8000-00000000000c&kind=song",
+  "status": 200,
+  "body": {
+    "matchedBy": "mbid",
+    "tracks": [
+      {
+        "id": "node_mb_00000000-0000-4000-8000-00000000000c",
+        "kind": "song",
+        "title": "City Anthem (Radio Edit)",
+        "artistCredit": "MC Example",
+        "releaseYear": 1988,
+        "isrc": null,
+        "musicbrainzRecordingId": "00000000-0000-4000-8000-00000000000c"
+      }
+    ]
+  }
+}

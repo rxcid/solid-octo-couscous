@@ -4,7 +4,7 @@
   "body": {
     "error": {
       "code": "invalid_request",
-      "message": "Pass isrc, or both title and artist."
+      "message": "Pass canonicalId, isrc, mbid, or both title and artist."
     }
   }
 }

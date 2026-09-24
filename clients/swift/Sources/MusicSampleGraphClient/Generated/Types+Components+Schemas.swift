@@ -536,8 +536,11 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/MatchMethod`.
         @frozen public enum MatchMethod: String, Codable, Hashable, Sendable, CaseIterable {
+            case canonicalId = "canonical_id"
             case isrc = "isrc"
+            case mbid = "mbid"
             case titleArtist = "title_artist"
+            case alias = "alias"
         }
         /// - Remark: Generated from `#/components/schemas/Provenance`.
         public struct Provenance: Codable, Hashable, Sendable {

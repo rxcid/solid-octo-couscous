@@ -37,10 +37,34 @@ const titles = (tracks: TrackSummary[]) => tracks.map((t) => t.title);
 type ErrorResponse = { error: { code: string; message: string } };
 
 describe("GET /v1/tracks/resolve", () => {
+  it("prefers a canonical id over conflicting identifiers and text", async () => {
+    const body = await get<Resolution>(
+      `/v1/tracks/resolve?canonicalId=${ids.cityAnthem}&isrc=USAAA6900001&title=Night%20Drive&artist=DJ%20Sample`,
+    );
+    assert.equal(body.matchedBy, "canonical_id");
+    assert.deepEqual(titles(body.tracks), ["City Anthem"]);
+  });
+
   it("matches an ISRC however it is formatted, with every recording sharing it", async () => {
     const body = await get<Resolution>("/v1/tracks/resolve?isrc=us-aaa-69-00001");
     assert.equal(body.matchedBy, "isrc");
     assert.deepEqual(titles(body.tracks), ["Funky Break", "Funky Break Pt. 1"]);
+  });
+
+  it("unites ISRC and MusicBrainz matches at the same priority", async () => {
+    const body = await get<Resolution>(
+      "/v1/tracks/resolve?isrc=USAAA6900001&mbid=00000000-0000-4000-8000-00000000000C",
+    );
+    assert.equal(body.matchedBy, "isrc");
+    assert.deepEqual(titles(body.tracks), ["Funky Break", "Funky Break Pt. 1", "City Anthem (Radio Edit)"]);
+  });
+
+  it("matches a MusicBrainz recording id without an ISRC", async () => {
+    const body = await get<Resolution>(
+      "/v1/tracks/resolve?mbid=00000000-0000-4000-8000-00000000000C&title=Night%20Drive&artist=DJ%20Sample",
+    );
+    assert.equal(body.matchedBy, "mbid");
+    assert.deepEqual(titles(body.tracks), ["City Anthem (Radio Edit)"]);
   });
 
   it("matches every pressing by normalized title and artist", async () => {
@@ -57,6 +81,19 @@ describe("GET /v1/tracks/resolve", () => {
     assert.deepEqual(titles(body.tracks), ["Night Drive"]);
   });
 
+  it("uses known aliases only after a primary title match fails", async () => {
+    const primary = await get<Resolution>("/v1/tracks/resolve?title=Night%20Drive&artist=DJ%20Sample");
+    assert.equal(primary.matchedBy, "title_artist");
+    assert.deepEqual(titles(primary.tracks), ["Night Drive"]);
+    const alias = await get<Resolution>("/v1/tracks/resolve?title=BREAK%20BEAT&artist=The%20Originals");
+    assert.equal(alias.matchedBy, "alias");
+    assert.deepEqual(titles(alias.tracks), ["Funky Break"]);
+    assert.deepEqual(
+      (await get<Resolution>("/v1/tracks/resolve?title=Break%20Beat&artist=The%20Originals&kind=speech")).tracks,
+      [],
+    );
+  });
+
   it("respects kind", async () => {
     const song = await get<Resolution>("/v1/tracks/resolve?title=Famous%20Speech&artist=A%20Speaker");
     assert.deepEqual(song.tracks, []);
@@ -68,7 +105,7 @@ describe("GET /v1/tracks/resolve", () => {
     assert.deepEqual(await get("/v1/tracks/resolve?title=Nothing&artist=Nobody"), { matchedBy: null, tracks: [] });
   });
 
-  it("needs an ISRC or both title and artist", async () => {
+  it("needs a canonical id, identifier, or both title and artist", async () => {
     const body = await get<ErrorResponse>("/v1/tracks/resolve?title=Night%20Drive", 400);
     assert.equal(body.error.code, "invalid_request");
   });

@@ -13,7 +13,7 @@ public import struct Foundation.Date
 public enum Operations {
     /// Find the catalog recordings for a recognized song
     ///
-    /// Pass what recognition returned. An ISRC match wins; otherwise every recording with the same normalized title, artist, and kind matches. Needs an ISRC, or a title and an artist.
+    /// Pass a catalog id, ISRC, MusicBrainz recording id, or title and artist. The first stages are Sinc's bundled lookup: canonical id, then the union of ISRC and MusicBrainz matches, then normalized title and artist. Known title and artist aliases are a last exact stage that only the online catalog has.
     ///
     /// - Remark: HTTP `GET /v1/tracks/resolve`.
     /// - Remark: Generated from `#/paths//v1/tracks/resolve/get(resolveTrack)`.
@@ -22,8 +22,16 @@ public enum Operations {
         public struct Input: Sendable, Hashable {
             /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query`.
             public struct Query: Sendable, Hashable {
+                /// A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f….
+                ///
+                /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query/canonicalId`.
+                public var canonicalId: Swift.String?
                 /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query/isrc`.
                 public var isrc: Swift.String?
+                /// MusicBrainz recording id.
+                ///
+                /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query/mbid`.
+                public var mbid: Swift.String?
                 /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query/title`.
                 public var title: Swift.String?
                 /// - Remark: Generated from `#/paths/v1/tracks/resolve/GET/query/artist`.
@@ -33,17 +41,23 @@ public enum Operations {
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
+                ///   - canonicalId: A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f….
                 ///   - isrc:
+                ///   - mbid: MusicBrainz recording id.
                 ///   - title:
                 ///   - artist:
                 ///   - kind:
                 public init(
+                    canonicalId: Swift.String? = nil,
                     isrc: Swift.String? = nil,
+                    mbid: Swift.String? = nil,
                     title: Swift.String? = nil,
                     artist: Swift.String? = nil,
                     kind: Components.Schemas.TrackKind? = nil
                 ) {
+                    self.canonicalId = canonicalId
                     self.isrc = isrc
+                    self.mbid = mbid
                     self.title = title
                     self.artist = artist
                     self.kind = kind
