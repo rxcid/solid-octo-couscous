@@ -67,6 +67,13 @@ private func client(_ recording: String) throws -> SampleGraphClient {
         #expect(root.children.map(\.node.track.title) == ["City Anthem", "Late Echo", "Night Drive"])
     }
 
+    @Test func decodesGenerationsFromTheRecordedAPI() async throws {
+        let family = try await client("generations").generations(id: try recordedTrackID("generations"))
+        #expect(family.root.track.title == "Funky Break")
+        #expect(family.generations.first?.role == .thisSong)
+        #expect(family.generations.contains { $0.role == .after })
+    }
+
     @Test func decodesSiblingsAndSearch() async throws {
         let groups = try await client("siblings").siblings(id: try recordedTrackID("siblings"))
         #expect(groups.map(\.source.title) == ["Funky Break"])

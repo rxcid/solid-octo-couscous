@@ -196,6 +196,34 @@ export const Lineage = Type.Object(
   { title: "Lineage" },
 );
 
+export const GenerationsTrack = Type.Object({
+  title: Type.String(), artist: Type.String(), year: Nullable(Type.Integer()),
+  kind: TrackKind, isrc: Nullable(Type.String()),
+  musicBrainzRecordingID: Nullable(Type.String()), catalogRecordingID: TrackId,
+}, { title: "GenerationsTrack" });
+
+export const GenerationsRecord = Type.Object({
+  id: Type.String(), track: GenerationsTrack, earliestYear: Nullable(Type.Integer()),
+  handoffTypes: Type.Array(StringEnum(["sampled", "interpolated", "remixed"], { title: "HandoffType" })),
+  connectedTitles: Type.Array(Type.String()), alsoFromTitles: Type.Array(Type.String()),
+}, { title: "GenerationsRecord" });
+
+export const GenerationsGap = Type.Object({
+  years: Nullable(Type.Object({ lower: Type.Integer(), upper: Type.Integer() }, { title: "GenerationsYearRange" })),
+  hasDateConflict: Type.Boolean(),
+}, { title: "GenerationsGap" });
+
+export const Generation = Type.Object({
+  role: StringEnum(["before", "thisSong", "sameGeneration", "after"], { title: "GenerationRole" }),
+  offset: Type.Integer(), records: Type.Array(GenerationsRecord),
+  gapFromPrevious: Nullable(GenerationsGap),
+}, { title: "Generation" });
+
+export const GenerationsFamily = Type.Object({
+  root: GenerationsRecord, generations: Type.Array(Generation),
+  hasMoreBefore: Type.Boolean(), hasMoreAfter: Type.Boolean(),
+}, { title: "GenerationsFamily" });
+
 export const ResolveQuery = Type.Object({
   isrc: Type.Optional(Type.String({ maxLength: 64 })),
   title: Type.Optional(Type.String({ maxLength: 500 })),
@@ -226,3 +254,4 @@ export type Relationships = Static<typeof Relationships>;
 export type SiblingGroup = Static<typeof SiblingGroup>;
 export type Lineage = Static<typeof Lineage>;
 export type Resolution = Static<typeof Resolution>;
+export type GenerationsFamily = Static<typeof GenerationsFamily>;

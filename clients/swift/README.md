@@ -16,7 +16,8 @@ guard let song = match.tracks.first else { return } // not in the catalog
 
 let dna = try await api.relationships(id: song.id)           // .sources, .derivatives
 let crowd = try await api.siblings(id: song.id)              // who else used the same sources
-let tree = try await api.lineage(id: song.id).tree           // generations back, as a tree
+let family = try await api.generations(id: song.id)          // Sinc's sound family ladder
+let tree = try await api.lineage(id: song.id).tree           // the older lineage tree
 let fanOut = try await api.lineage(id: song.id, direction: .derivatives)
 ```
 

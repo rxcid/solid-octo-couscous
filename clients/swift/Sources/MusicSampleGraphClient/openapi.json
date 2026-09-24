@@ -87,6 +87,184 @@
         },
         "title": "ErrorDetail"
       },
+      "Generation": {
+        "type": "object",
+        "required": [
+          "role",
+          "offset",
+          "records"
+        ],
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/GenerationRole"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GenerationsRecord"
+            }
+          },
+          "gapFromPrevious": {
+            "$ref": "#/components/schemas/GenerationsGap"
+          }
+        },
+        "title": "Generation"
+      },
+      "GenerationRole": {
+        "enum": [
+          "before",
+          "thisSong",
+          "sameGeneration",
+          "after"
+        ],
+        "title": "GenerationRole",
+        "type": "string"
+      },
+      "GenerationsFamily": {
+        "type": "object",
+        "required": [
+          "root",
+          "generations",
+          "hasMoreBefore",
+          "hasMoreAfter"
+        ],
+        "properties": {
+          "root": {
+            "$ref": "#/components/schemas/GenerationsRecord"
+          },
+          "generations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Generation"
+            }
+          },
+          "hasMoreBefore": {
+            "type": "boolean"
+          },
+          "hasMoreAfter": {
+            "type": "boolean"
+          }
+        },
+        "title": "GenerationsFamily"
+      },
+      "GenerationsGap": {
+        "type": "object",
+        "required": [
+          "hasDateConflict"
+        ],
+        "properties": {
+          "years": {
+            "$ref": "#/components/schemas/GenerationsYearRange"
+          },
+          "hasDateConflict": {
+            "type": "boolean"
+          }
+        },
+        "title": "GenerationsGap"
+      },
+      "GenerationsRecord": {
+        "type": "object",
+        "required": [
+          "id",
+          "track",
+          "handoffTypes",
+          "connectedTitles",
+          "alsoFromTitles"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "track": {
+            "$ref": "#/components/schemas/GenerationsTrack"
+          },
+          "earliestYear": {
+            "type": "integer"
+          },
+          "handoffTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HandoffType"
+            }
+          },
+          "connectedTitles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "alsoFromTitles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "GenerationsRecord"
+      },
+      "GenerationsTrack": {
+        "type": "object",
+        "required": [
+          "title",
+          "artist",
+          "kind",
+          "catalogRecordingID"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "artist": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrackKind"
+          },
+          "isrc": {
+            "type": "string"
+          },
+          "musicBrainzRecordingID": {
+            "type": "string"
+          },
+          "catalogRecordingID": {
+            "type": "string",
+            "pattern": "^node_[A-Za-z0-9_-]{1,100}$",
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        },
+        "title": "GenerationsTrack"
+      },
+      "GenerationsYearRange": {
+        "type": "object",
+        "required": [
+          "lower",
+          "upper"
+        ],
+        "properties": {
+          "lower": {
+            "type": "integer"
+          },
+          "upper": {
+            "type": "integer"
+          }
+        },
+        "title": "GenerationsYearRange"
+      },
+      "HandoffType": {
+        "enum": [
+          "sampled",
+          "interpolated",
+          "remixed"
+        ],
+        "title": "HandoffType",
+        "type": "string"
+      },
       "Identifier": {
         "type": "object",
         "required": [
@@ -904,6 +1082,60 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Lineage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tracks/{id}/generations": {
+      "get": {
+        "operationId": "getGenerations",
+        "summary": "The song's sound family, following sampled, interpolated and remixed handoffs",
+        "tags": [
+          "tracks"
+        ],
+        "description": "Matches Sinc's GenerationsBuilder over published catalog edges and version clusters. One handoff is one generation; covers do not count.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^node_[A-Za-z0-9_-]{1,100}$"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f…."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerationsFamily"
                 }
               }
             }

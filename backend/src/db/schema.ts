@@ -164,6 +164,13 @@ export const tracks = pgTable(
   "tracks",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    /** Sinc's graph_nodes.id. Generations gives an unclustered node its own
+     * negative key, -catalog_node_id; a Postgres join id can differ after import. */
+    catalogNodeId: integer("catalog_node_id").unique(),
+    /** The first import deliberately omitted cluster_id because name/ISRC
+     * grouping sufficed for one-hop Music DNA. Generations walks version
+     * clusters across handoffs, so it needs Sinc's original cluster_id. */
+    clusterId: integer("cluster_id"),
     canonicalId: text("canonical_id").notNull().unique(),
     /** Dedup key: `mb:recording:<mbid>`, or `text:<kind>:<norm_title>:<norm_artist>`. */
     identityKey: text("identity_key").notNull().unique(),
@@ -182,6 +189,7 @@ export const tracks = pgTable(
   },
   (t) => [
     index("tracks_norm_idx").on(t.normTitle, t.normArtist, t.kind),
+    index("tracks_cluster_idx").on(t.clusterId),
     check("tracks_duration_ms_positive", sql`${t.durationMs} > 0`),
   ],
 );

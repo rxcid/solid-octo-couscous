@@ -134,7 +134,8 @@ async function importCatalog(rows: (query: string) => Row[]) {
            e.relationship_type, d.notes, source.title AS source_title
     FROM graph_edges e
     JOIN graph_nodes source ON source.id = e.source_node_id
-    LEFT JOIN relationship_details d ON d.edge_id = e.id`);
+    LEFT JOIN relationship_details d ON d.edge_id = e.id
+    ORDER BY e.id`);
   const selfReferences = edges.filter((e) => e.source_node_id === e.destination_node_id);
 
   await db.transaction(async (tx) => {
@@ -164,8 +165,11 @@ async function importCatalog(rows: (query: string) => Row[]) {
     const trackIds = new IdMap("track");
     const nodes = rows(`
       SELECT n.*, m.duration_ms, m.disambiguation, m.is_video
-      FROM graph_nodes n LEFT JOIN recording_metadata m ON m.node_id = n.id`);
+      FROM graph_nodes n LEFT JOIN recording_metadata m ON m.node_id = n.id
+      ORDER BY n.id`);
     await copy(tx, s.tracks, "tracks", nodes, (r) => ({
+      catalogNodeId: num(r.id),
+      clusterId: num(r.cluster_id),
       canonicalId: str(r.canonical_id),
       identityKey: str(r.identity_key),
       kind: member(s.trackKind.enumValues, r.kind, "graph_nodes.kind"),

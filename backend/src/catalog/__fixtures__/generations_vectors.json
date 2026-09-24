@@ -1,0 +1,1223 @@
+{
+  "cases": [
+    {
+      "family": {
+        "generations": [
+          {
+            "gapFromPrevious": null,
+            "offset": -1,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": 1983,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "2|juicyfruit",
+                "track": {
+                  "artist": "Mtume",
+                  "catalogRecordingID": "node_7612c79d4a940711b09101d8f671ab5e884c5f41f8ba1a3a4db129af20fd8b54",
+                  "isrc": "GBZYX1600078",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "1d890c2b-2ba3-4b34-9196-64d5cb0cc0dc",
+                  "title": "Juicy Fruit",
+                  "year": 1983
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "10420|rappinduke",
+                "track": {
+                  "artist": "The Rappin' Duke",
+                  "catalogRecordingID": "node_mb_7cf3a922-c586-4134-9d4a-53189021e0e3",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "7cf3a922-c586-4134-9d4a-53189021e0e3",
+                  "title": "Rappin' Duke (vocal)",
+                  "year": null
+                }
+              }
+            ],
+            "role": "before"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [],
+                "earliestYear": null,
+                "handoffTypes": [],
+                "id": "root",
+                "track": {
+                  "artist": "The Notorious B.I.G.",
+                  "catalogRecordingID": "node_a445b808dcac9e05bec13590d1f93af1ddebf0622af168b50aeab60f25e2e286",
+                  "isrc": "USBB40000359",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "181c0a32-6e3f-4680-8a7d-1daf0b42e43b",
+                  "title": "Juicy",
+                  "year": null
+                }
+              }
+            ],
+            "role": "thisSong"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "17822|juicybooty",
+                "track": {
+                  "artist": "Chris Brown feat. Jhené Aiko & R. Kelly",
+                  "catalogRecordingID": "node_mb_a68ed62f-cb82-47bc-9337-1095f3fca00a",
+                  "isrc": "USRC11702695",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "a68ed62f-cb82-47bc-9337-1095f3fca00a",
+                  "title": "Juicy Booty",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "13884|letitgo",
+                "track": {
+                  "artist": "Keyshia Cole feat. Missy Elliott & Lil’ Kim",
+                  "catalogRecordingID": "node_mb_588fafdf-6c30-48d3-b324-e62235303833",
+                  "isrc": "USUM70740000",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "588fafdf-6c30-48d3-b324-e62235303833",
+                  "title": "Let It Go",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "14685|letitgo|remix",
+                "track": {
+                  "artist": "Keyshia Cole feat. T.I., Missy Elliott & Young Dro",
+                  "catalogRecordingID": "node_mb_2b38cae7-d718-443b-bec2-d3c2d47994fe",
+                  "isrc": "USUM70748151",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "2b38cae7-d718-443b-bec2-d3c2d47994fe",
+                  "title": "Let It Go (remix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "6835|lovingyou",
+                "track": {
+                  "artist": "Jennifer Lopez",
+                  "catalogRecordingID": "node_mb_444dbdc1-dc60-4188-91d0-ef2230bfb732",
+                  "isrc": "USSM10213160",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "444dbdc1-dc60-4188-91d0-ef2230bfb732",
+                  "title": "Loving You",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "36851|maläksinkiima",
+                "track": {
+                  "artist": "Cool D",
+                  "catalogRecordingID": "node_mb_4fdda4ff-1d84-46bd-aab8-45d1daa54d19",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "4fdda4ff-1d84-46bd-aab8-45d1daa54d19",
+                  "title": "Ma läksin kiima",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy Fruit"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "2310|noquestion",
+                "track": {
+                  "artist": "Allure featuring LL Cool J",
+                  "catalogRecordingID": "node_mb_83d02048-fbe5-4ca8-b32a-82cc9d45d791",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "83d02048-fbe5-4ca8-b32a-82cc9d45d791",
+                  "title": "No Question",
+                  "year": null
+                }
+              }
+            ],
+            "role": "sameGeneration"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 1,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "interpolated",
+                  "sampled"
+                ],
+                "id": "383|adream",
+                "track": {
+                  "artist": "Jay‐Z feat. Faith Evans & Notorious B.I.G.",
+                  "catalogRecordingID": "node_c35080dd96329281d8a40b806b5e4bee9cfda258b9919e22c9c30cef89fa10a9",
+                  "isrc": "USDJ20201184",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "beb2b87b-cf8e-4688-9407-35271cec7109",
+                  "title": "A Dream",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "29280|awol",
+                "track": {
+                  "artist": "RBX",
+                  "catalogRecordingID": "node_mb_b3201b35-4fbe-4da5-9bac-1c9523e63df5",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "b3201b35-4fbe-4da5-9bac-1c9523e63df5",
+                  "title": "A.W.O.L.",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "16265|history",
+                "track": {
+                  "artist": "Mos Def feat. Talib Kweli",
+                  "catalogRecordingID": "node_mb_362b4346-fee5-4447-8329-f85d25498335",
+                  "isrc": "USCJ80900334",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "362b4346-fee5-4447-8329-f85d25498335",
+                  "title": "History",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "27442|itsonlyhiphop",
+                "track": {
+                  "artist": "Apathy feat. Brevi",
+                  "catalogRecordingID": "node_mb_e1e3d537-732a-47ca-9f8e-b8ec6f4c19b9",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "e1e3d537-732a-47ca-9f8e-b8ec6f4c19b9",
+                  "title": "It's Only Hip Hop",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "4725|powertrip",
+                "track": {
+                  "artist": "Lecrae feat. PRo, Sho Baraka & Andy Mineo",
+                  "catalogRecordingID": "node_mb_fbfd690d-7b9d-43ce-bd5d-a2cf1e5ad948",
+                  "isrc": "QMTND1100096",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "fbfd690d-7b9d-43ce-bd5d-a2cf1e5ad948",
+                  "title": "Power Trip",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [
+                  "Juicy Fruit"
+                ],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "15548|theone",
+                "track": {
+                  "artist": "Tamar Braxton",
+                  "catalogRecordingID": "node_mb_5fca01f7-1d54-49c6-be17-8e8fac6e45f7",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "5fca01f7-1d54-49c6-be17-8e8fac6e45f7",
+                  "title": "The One",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Juicy"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "11775|villuminati",
+                "track": {
+                  "artist": "J. Cole",
+                  "catalogRecordingID": "node_mb_580bf335-54ee-4d32-902f-866d89e3d08a",
+                  "isrc": "USQX91301178",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "580bf335-54ee-4d32-902f-866d89e3d08a",
+                  "title": "Villuminati",
+                  "year": null
+                }
+              }
+            ],
+            "role": "after"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 2,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "History"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "48800|historytown",
+                "track": {
+                  "artist": "Max Tannone",
+                  "catalogRecordingID": "node_mb_15f647dc-d436-441b-bbf1-ec5bf5f799e0",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "15f647dc-d436-441b-bbf1-ec5bf5f799e0",
+                  "title": "History Town",
+                  "year": null
+                }
+              }
+            ],
+            "role": "after"
+          }
+        ],
+        "hasMoreAfter": false,
+        "hasMoreBefore": false,
+        "root": {
+          "alsoFromTitles": [],
+          "connectedTitles": [],
+          "earliestYear": null,
+          "handoffTypes": [],
+          "id": "root",
+          "track": {
+            "artist": "The Notorious B.I.G.",
+            "catalogRecordingID": "node_a445b808dcac9e05bec13590d1f93af1ddebf0622af168b50aeab60f25e2e286",
+            "isrc": "USBB40000359",
+            "kind": "song",
+            "musicBrainzRecordingID": "181c0a32-6e3f-4680-8a7d-1daf0b42e43b",
+            "title": "Juicy",
+            "year": null
+          }
+        }
+      },
+      "maxClusters": 1500,
+      "name": "ordinary",
+      "request": {
+        "artist": "The Notorious B.I.G.",
+        "canonicalId": "node_a445b808dcac9e05bec13590d1f93af1ddebf0622af168b50aeab60f25e2e286",
+        "kind": "song",
+        "title": "Juicy"
+      }
+    },
+    {
+      "family": {
+        "generations": [
+          {
+            "gapFromPrevious": null,
+            "offset": -1,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Reign (Evil 9 mix)"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "2360|farmerinthecity",
+                "track": {
+                  "artist": "Scott Walker",
+                  "catalogRecordingID": "node_mb_93f57fda-17ba-4e7f-a5c4-df7776fdfab5",
+                  "isrc": "GBF089500051",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "93f57fda-17ba-4e7f-a5c4-df7776fdfab5",
+                  "title": "Farmer in the City",
+                  "year": null
+                }
+              }
+            ],
+            "role": "before"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [],
+                "earliestYear": null,
+                "handoffTypes": [],
+                "id": "root",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_50ea5c52-d5f6-455d-94ac-c5a4c671310f",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "50ea5c52-d5f6-455d-94ac-c5a4c671310f",
+                  "title": "Reign (Evil 9 mix)",
+                  "year": null
+                }
+              }
+            ],
+            "role": "thisSong"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "34883|lanċafjamma",
+                "track": {
+                  "artist": "Unfit For Purpose",
+                  "catalogRecordingID": "node_mb_91619bdb-ff57-436c-a2f0-948ca876dde7",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "91619bdb-ff57-436c-a2f0-948ca876dde7",
+                  "title": "Lanċafjamma",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "34835|qawmienpreludjulanċafjamma",
+                "track": {
+                  "artist": "Unfit For Purpose",
+                  "catalogRecordingID": "node_mb_e9e13717-46c4-454f-809e-63ea8c955a0c",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "e9e13717-46c4-454f-809e-63ea8c955a0c",
+                  "title": "Qawmien / Preludju Lanċafjamma",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "2359|reign",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_3ee454b8-ff72-44a0-8902-0a1a0e82a18c",
+                  "isrc": "GBAQH0300025",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "3ee454b8-ff72-44a0-8902-0a1a0e82a18c",
+                  "title": "Reign",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26263|reign|aidanlavelle",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_45a4c9d1-1213-4297-8634-078939460241",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "45a4c9d1-1213-4297-8634-078939460241",
+                  "title": "Reign (Aidan Lavelle mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26290|reign|anagramremix",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_2e64fa7c-818b-41f1-a4c1-e8a4773287a4",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "2e64fa7c-818b-41f1-a4c1-e8a4773287a4",
+                  "title": "Reign (Anagram remix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "25568|reign|beatpharmacybettertoreigninhellthantoserveinheaven",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_e8635d0d-ae49-4d1c-ab88-2182c1fe0288",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "e8635d0d-ae49-4d1c-ab88-2182c1fe0288",
+                  "title": "Reign (Beat Pharmacy's Better to Reign in Hell Than to Serve in Heaven mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "2359|reign|falseprophet",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_56d1ee75-b5a7-4701-a368-178e62f7b446",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "56d1ee75-b5a7-4701-a368-178e62f7b446",
+                  "title": "Reign (False Prophet mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26218|reign|falseprophetremix",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_c8a9dea1-76d5-475b-94f2-d890246a0825",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "c8a9dea1-76d5-475b-94f2-d890246a0825",
+                  "title": "Reign (False Prophet remix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "36267|reign",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_58e62c8b-685a-4bed-aea9-546a1d844077",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "58e62c8b-685a-4bed-aea9-546a1d844077",
+                  "title": "Reign (instrumental version)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "24801|reign|morgangeistremix",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_746381c5-3b6d-4531-bc5d-56c446d01d4a",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "746381c5-3b6d-4531-bc5d-56c446d01d4a",
+                  "title": "Reign (Morgan Geist remix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26839|reign",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_b397330f-9072-4cd6-9c60-86cceeb39681",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "b397330f-9072-4cd6-9c60-86cceeb39681",
+                  "title": "Reign (original version)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26217|reign|rjd",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_62d96cef-544b-4a4e-8d8c-333c26fd0cb6",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "62d96cef-544b-4a4e-8d8c-333c26fd0cb6",
+                  "title": "Reign (RJD2 instrumental)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26317|reign|rjd",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_d6db82bb-6cc2-405e-9205-cc7092ddbcb6",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "d6db82bb-6cc2-405e-9205-cc7092ddbcb6",
+                  "title": "Reign (RJD2 vocal mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "24943|reign|threeamblackswan",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_64b79a87-707f-4411-9055-941e552826a9",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "64b79a87-707f-4411-9055-941e552826a9",
+                  "title": "Reign (Three AM’s Black Swan vocal mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "26790|reign|trafikstonedrose",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_0c3f61f7-d43e-4ed8-9bdd-0ffac7c6c61a",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "0c3f61f7-d43e-4ed8-9bdd-0ffac7c6c61a",
+                  "title": "Reign (Trafik's Stoned Rose mix)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "24870|reign|unklereconstruction",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_18cb1907-0189-482f-b3f0-436fdb1292b2",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "18cb1907-0189-482f-b3f0-436fdb1292b2",
+                  "title": "Reign (UNKLE Reconstruction)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "36266|reign|wayoutwest",
+                "track": {
+                  "artist": "UNKLE",
+                  "catalogRecordingID": "node_mb_45e44622-2e32-4d38-8d7e-8809ee645e5e",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "45e44622-2e32-4d38-8d7e-8809ee645e5e",
+                  "title": "Reign (Way Out West instrumental)",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Farmer in the City"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "24802|reign|wayoutwest",
+                "track": {
+                  "artist": "UNKLE feat. Ian Brown",
+                  "catalogRecordingID": "node_mb_81f0ff71-ae27-4867-ba44-360fc0669479",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "81f0ff71-ae27-4867-ba44-360fc0669479",
+                  "title": "Reign (Way Out West mix)",
+                  "year": null
+                }
+              }
+            ],
+            "role": "sameGeneration"
+          }
+        ],
+        "hasMoreAfter": false,
+        "hasMoreBefore": false,
+        "root": {
+          "alsoFromTitles": [],
+          "connectedTitles": [],
+          "earliestYear": null,
+          "handoffTypes": [],
+          "id": "root",
+          "track": {
+            "artist": "UNKLE",
+            "catalogRecordingID": "node_mb_50ea5c52-d5f6-455d-94ac-c5a4c671310f",
+            "isrc": null,
+            "kind": "song",
+            "musicBrainzRecordingID": "50ea5c52-d5f6-455d-94ac-c5a4c671310f",
+            "title": "Reign (Evil 9 mix)",
+            "year": null
+          }
+        }
+      },
+      "maxClusters": 1500,
+      "name": "remix",
+      "request": {
+        "artist": "UNKLE",
+        "canonicalId": "node_mb_50ea5c52-d5f6-455d-94ac-c5a4c671310f",
+        "kind": "song",
+        "title": "Reign (Evil 9 mix)"
+      }
+    },
+    {
+      "family": {
+        "generations": [
+          {
+            "gapFromPrevious": null,
+            "offset": -1,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "How Much"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "interpolated"
+                ],
+                "id": "560|meandmygirlfriend",
+                "track": {
+                  "artist": "Makaveli",
+                  "catalogRecordingID": "node_80da176cbb1788db793906aba953eb3730b8a5113a152ddd66eeb153ccc44022",
+                  "isrc": "USKO10403733",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "34bbce05-cc04-4e5e-b992-d351a9a927e2",
+                  "title": "Me and My Girlfriend",
+                  "year": null
+                }
+              }
+            ],
+            "role": "before"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [],
+                "earliestYear": null,
+                "handoffTypes": [],
+                "id": "root",
+                "track": {
+                  "artist": "Mariah Carey feat. Usher",
+                  "catalogRecordingID": "node_f0ebb100f7357b380a5f3b2ba3fb31fddea09036ea565c9d8e64815c07583595",
+                  "isrc": "USSM19920974",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "4a845938-ac7d-49c5-a8ab-5c3547a169e1",
+                  "title": "How Much",
+                  "year": null
+                }
+              }
+            ],
+            "role": "thisSong"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Me and My Girlfriend"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "interpolated",
+                  "sampled"
+                ],
+                "id": "646|03bonnieclyde",
+                "track": {
+                  "artist": "Jay‐Z feat. Beyoncé Knowles",
+                  "catalogRecordingID": "node_a60f0b8126942aa84a3d1b420a2b8301b094a2671d066ae7aaff39c49f8f31a3",
+                  "isrc": "USDJ20201108",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "5465ca86-3881-4349-81b2-6efbd3a59451",
+                  "title": "’03 Bonnie & Clyde",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Me and My Girlfriend"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "11203|badmeetsevil",
+                "track": {
+                  "artist": "Eminem featuring Royce da 5‐9",
+                  "catalogRecordingID": "node_mb_963ef8a7-2e8c-4f58-9fa1-87c45fb6860e",
+                  "isrc": "USIR19902074",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "963ef8a7-2e8c-4f58-9fa1-87c45fb6860e",
+                  "title": "Bad Meets Evil",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Me and My Girlfriend"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "12205|girlfriend",
+                "track": {
+                  "artist": "Icona Pop",
+                  "catalogRecordingID": "node_mb_663136ca-9935-43a5-a3db-f7d6c9bc984e",
+                  "isrc": "SEWEE1300501",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "663136ca-9935-43a5-a3db-f7d6c9bc984e",
+                  "title": "Girlfriend",
+                  "year": null
+                }
+              }
+            ],
+            "role": "sameGeneration"
+          }
+        ],
+        "hasMoreAfter": false,
+        "hasMoreBefore": false,
+        "root": {
+          "alsoFromTitles": [],
+          "connectedTitles": [],
+          "earliestYear": null,
+          "handoffTypes": [],
+          "id": "root",
+          "track": {
+            "artist": "Mariah Carey feat. Usher",
+            "catalogRecordingID": "node_f0ebb100f7357b380a5f3b2ba3fb31fddea09036ea565c9d8e64815c07583595",
+            "isrc": "USSM19920974",
+            "kind": "song",
+            "musicBrainzRecordingID": "4a845938-ac7d-49c5-a8ab-5c3547a169e1",
+            "title": "How Much",
+            "year": null
+          }
+        }
+      },
+      "maxClusters": 1500,
+      "name": "cycle",
+      "request": {
+        "artist": "Mariah Carey feat. Usher",
+        "canonicalId": "node_f0ebb100f7357b380a5f3b2ba3fb31fddea09036ea565c9d8e64815c07583595",
+        "kind": "song",
+        "title": "How Much"
+      }
+    },
+    {
+      "family": null,
+      "maxClusters": 1500,
+      "name": "no_family",
+      "request": {
+        "artist": "Nobody In Particular",
+        "canonicalId": null,
+        "kind": "song",
+        "title": "A Song Sinc Has Never Heard Of"
+      }
+    },
+    {
+      "family": {
+        "generations": [
+          {
+            "gapFromPrevious": null,
+            "offset": 0,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [],
+                "earliestYear": null,
+                "handoffTypes": [],
+                "id": "root",
+                "track": {
+                  "artist": "James Brown",
+                  "catalogRecordingID": "node_mb_85b53d67-1a8b-4f48-a4b1-7c743fe68c59",
+                  "isrc": "USUM70844814",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "85b53d67-1a8b-4f48-a4b1-7c743fe68c59",
+                  "title": "Funky Drummer, Part 1",
+                  "year": null
+                }
+              }
+            ],
+            "role": "thisSong"
+          },
+          {
+            "gapFromPrevious": null,
+            "offset": 1,
+            "records": [
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "726|bringthenoise",
+                "track": {
+                  "artist": "Public Enemy",
+                  "catalogRecordingID": "node_22abf0d94e82f6c4903dacc3fc8d4519c499b75a6406584b81ebfa71d53c4bbe",
+                  "isrc": "USDJ28800014",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "5d9ecc8b-75fe-4d62-a1aa-65dab19a55aa",
+                  "title": "Bring the Noise",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "40|letmeride",
+                "track": {
+                  "artist": "Dr. Dre feat. Ruben, Jewell",
+                  "catalogRecordingID": "node_8d973d122ee55dd4521c0b07cf0d866929818a9c6da9af8cab5f93e99bbfa567",
+                  "isrc": null,
+                  "kind": "song",
+                  "musicBrainzRecordingID": "93971e47-7e74-438b-b066-9ac00c6840ab",
+                  "title": "Let Me Ride",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "1216|mamasaidknockyouout",
+                "track": {
+                  "artist": "LL Cool J",
+                  "catalogRecordingID": "node_c2d70e8c89ee0534f90fd167b53bcfe92d83c57b02d1d04d7fdc35b315f8a9d7",
+                  "isrc": "USDJ29000008",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "72de8de0-4a1c-4184-a95e-558546986772",
+                  "title": "Mama Said Knock You Out",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "1709|oodlesofos",
+                "track": {
+                  "artist": "De La Soul",
+                  "catalogRecordingID": "node_mb_4bea4fc9-6283-4f1d-ae96-3ceb979a257c",
+                  "isrc": "DEA610062744",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "4bea4fc9-6283-4f1d-ae96-3ceb979a257c",
+                  "title": "Oodles of O’s",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "1552|shadrach",
+                "track": {
+                  "artist": "Beastie Boys",
+                  "catalogRecordingID": "node_mb_50e3cd8c-d1e9-4989-a536-111856824433",
+                  "isrc": "USCA20807313",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "50e3cd8c-d1e9-4989-a536-111856824433",
+                  "title": "Shadrach",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "1163|stopthattrain",
+                "track": {
+                  "artist": "Vanilla Ice",
+                  "catalogRecordingID": "node_6dfc240604e0966f5e00f5d893cc26f3a401677c1be078c253a66617269aaef5",
+                  "isrc": "USSB29000060",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "2ed51296-000b-498a-bf8a-a124e9d53443",
+                  "title": "Stop That Train",
+                  "year": null
+                }
+              },
+              {
+                "alsoFromTitles": [],
+                "connectedTitles": [
+                  "Funky Drummer, Part 1"
+                ],
+                "earliestYear": null,
+                "handoffTypes": [
+                  "sampled"
+                ],
+                "id": "1337|whereimfrom",
+                "track": {
+                  "artist": "Digable Planets",
+                  "catalogRecordingID": "node_mb_11e1c34c-bec3-41c9-92a3-ee94b8a712e7",
+                  "isrc": "USEM39200371",
+                  "kind": "song",
+                  "musicBrainzRecordingID": "11e1c34c-bec3-41c9-92a3-ee94b8a712e7",
+                  "title": "Where I’m From",
+                  "year": null
+                }
+              }
+            ],
+            "role": "after"
+          }
+        ],
+        "hasMoreAfter": true,
+        "hasMoreBefore": false,
+        "root": {
+          "alsoFromTitles": [],
+          "connectedTitles": [],
+          "earliestYear": null,
+          "handoffTypes": [],
+          "id": "root",
+          "track": {
+            "artist": "James Brown",
+            "catalogRecordingID": "node_mb_85b53d67-1a8b-4f48-a4b1-7c743fe68c59",
+            "isrc": "USUM70844814",
+            "kind": "song",
+            "musicBrainzRecordingID": "85b53d67-1a8b-4f48-a4b1-7c743fe68c59",
+            "title": "Funky Drummer, Part 1",
+            "year": null
+          }
+        }
+      },
+      "maxClusters": 8,
+      "name": "cluster_cap",
+      "request": {
+        "artist": "James Brown",
+        "canonicalId": "node_mb_85b53d67-1a8b-4f48-a4b1-7c743fe68c59",
+        "kind": "song",
+        "title": "Funky Drummer, Part 1"
+      }
+    }
+  ],
+  "catalogSha256": "ccf422e127e329d1573a249cdf85993a7a627641a0ef053e13c4b37b62fba630"
+}

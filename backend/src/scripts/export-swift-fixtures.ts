@@ -28,6 +28,7 @@ const recordings: Record<string, string> = {
   "track-not-found": "/v1/tracks/node_unknown",
   relationships: `/v1/tracks/${ids.funkyBreak}/relationships`,
   lineage: `/v1/tracks/${ids.lateEcho}/lineage`,
+  generations: `/v1/tracks/${ids.funkyBreak}/generations`,
   "lineage-derivatives": `/v1/tracks/${ids.funkyBreak}/lineage?direction=derivatives&depth=2`,
   siblings: `/v1/tracks/${ids.nightDrive}/siblings`,
   search: "/v1/search?q=funky",

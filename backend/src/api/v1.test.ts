@@ -109,6 +109,27 @@ describe("GET /v1/tracks/:id", () => {
   });
 });
 
+describe("GET /v1/tracks/:id/generations", () => {
+  it("uses each unclustered node as its own cluster and skips unpublished edges", async () => {
+    const family = await get<{ root: { track: { title: string } }; generations: {
+      role: string; offset: number; records: { track: { title: string } }[] }[] }>(
+      `/v1/tracks/${ids.funkyBreak}/generations`,
+    );
+    assert.equal(family.root.track.title, "Funky Break");
+    assert.deepEqual(family.generations.map((g) => [g.role, g.offset]),
+      [["thisSong", 0], ["after", 1], ["after", 2]]);
+    assert.deepEqual(family.generations[1]!.records.map((r) => r.track.title),
+      ["City Anthem (Radio Edit)", "City Anthem", "Night Drive"]);
+    const candidate = await get<{ generations: { role: string }[] }>(`/v1/tracks/${ids.unreviewed}/generations`);
+    assert.deepEqual(candidate.generations.map((g) => g.role), ["thisSong"]);
+  });
+
+  it("404s when the canonical id is absent", async () => {
+    assert.equal((await get<ErrorResponse>("/v1/tracks/node_unknown/generations", 404)).error.code,
+      "track_not_found");
+  });
+});
+
 describe("GET /v1/tracks/:id/relationships", () => {
   it("covers the whole song, one relationship per related song, never candidates", async () => {
     const body = await get<Relationships>(`/v1/tracks/${ids.funkyBreak}/relationships`);
@@ -318,12 +339,13 @@ describe("the service", () => {
         ["/v1/search", "searchTracks"],
         ["/v1/tracks/resolve", "resolveTrack"],
         ["/v1/tracks/{id}", "getTrack"],
+        ["/v1/tracks/{id}/generations", "getGenerations"],
         ["/v1/tracks/{id}/lineage", "getLineage"],
         ["/v1/tracks/{id}/relationships", "getRelationships"],
         ["/v1/tracks/{id}/siblings", "getSiblings"],
       ],
     );
-    for (const name of ["TrackSummary", "TrackDetail", "Relationship", "Lineage", "LineageNode", "Error"]) {
+    for (const name of ["TrackSummary", "TrackDetail", "Relationship", "Lineage", "LineageNode", "GenerationsFamily", "Generation", "Error"]) {
       assert.ok(spec.components.schemas[name], `components.schemas.${name}`);
     }
     // Named schemas appear once, then by reference.

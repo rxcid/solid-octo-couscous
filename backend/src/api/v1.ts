@@ -1,9 +1,11 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "typebox";
 import * as catalog from "../catalog/repository.js";
+import { generations } from "../catalog/generations.js";
 import type { Db } from "../db/client.js";
 import {
   Direction,
+  GenerationsFamily,
   ErrorBody,
   Lineage,
   Relationships,
@@ -104,6 +106,22 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
     if (trackId === null) return reply.code(404).send(notFound(request.params.id));
     const { direction = "sources", depth, rootLimit, childLimit } = request.query;
     return catalog.lineage(db, trackId, { direction, maxDepth: depth, rootLimit, childLimit, maxNodes: 500 });
+  });
+
+  app.get("/tracks/:id/generations", {
+    schema: {
+      operationId: "getGenerations",
+      tags: ["tracks"],
+      summary: "The song's sound family, following sampled, interpolated and remixed handoffs",
+      description: "Matches Sinc's GenerationsBuilder over published catalog edges and version clusters. " +
+        "One handoff is one generation; covers do not count.",
+      params: TrackParams,
+      response: { 200: GenerationsFamily, ...errors },
+    },
+  }, async (request, reply) => {
+    const family = await generations(db, request.params.id);
+    if (!family) return reply.code(404).send(notFound(request.params.id));
+    return family;
   });
 
   app.get("/tracks/:id/siblings", {

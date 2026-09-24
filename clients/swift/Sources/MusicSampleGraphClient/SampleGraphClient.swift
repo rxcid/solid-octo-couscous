@@ -87,6 +87,16 @@ public struct SampleGraphClient: Sendable {
         }
     }
 
+    /// The song's sound family, using Sinc's three-handoff Generations ladder.
+    public func generations(id: String) async throws -> Components.Schemas.GenerationsFamily {
+        switch try await client.getGenerations(path: .init(id: id)) {
+        case .ok(let response): return try response.body.json
+        case .badRequest(let response): throw SampleGraphError(400, try? response.body.json)
+        case .notFound(let response): throw SampleGraphError(404, try? response.body.json)
+        case .undocumented(let status, _): throw SampleGraphError(status, nil)
+        }
+    }
+
     /// Other songs built from the sources this song uses, busiest source first.
     public func siblings(id: String, perSource: Int? = nil, sources: Int? = nil) async throws -> [Components.Schemas.SiblingGroup] {
         switch try await client.getSiblings(path: .init(id: id), query: .init(perSource: perSource, sources: sources)) {
