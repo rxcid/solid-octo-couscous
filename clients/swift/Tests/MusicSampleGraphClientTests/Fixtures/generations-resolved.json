@@ -1,0 +1,142 @@
+{
+  "url": "/v1/generations?isrc=USAAA6900001&kind=song",
+  "status": 200,
+  "body": {
+    "root": {
+      "id": "root",
+      "track": {
+        "title": "Funky Break",
+        "artist": "The Originals",
+        "year": 1969,
+        "kind": "song",
+        "isrc": "USAAA6900001",
+        "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000a",
+        "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000a"
+      },
+      "earliestYear": 1969,
+      "handoffTypes": [],
+      "connectedTitles": [],
+      "alsoFromTitles": []
+    },
+    "generations": [
+      {
+        "role": "thisSong",
+        "offset": 0,
+        "records": [
+          {
+            "id": "root",
+            "track": {
+              "title": "Funky Break",
+              "artist": "The Originals",
+              "year": 1969,
+              "kind": "song",
+              "isrc": "USAAA6900001",
+              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000a",
+              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000a"
+            },
+            "earliestYear": 1969,
+            "handoffTypes": [],
+            "connectedTitles": [],
+            "alsoFromTitles": []
+          }
+        ],
+        "gapFromPrevious": null
+      },
+      {
+        "role": "after",
+        "offset": 1,
+        "records": [
+          {
+            "id": "-3|cityanthem",
+            "track": {
+              "title": "City Anthem",
+              "artist": "MC Example",
+              "year": 1988,
+              "kind": "song",
+              "isrc": "USBBB8800001",
+              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000b",
+              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000b"
+            },
+            "earliestYear": 1988,
+            "handoffTypes": [
+              "sampled"
+            ],
+            "connectedTitles": [
+              "Funky Break"
+            ],
+            "alsoFromTitles": []
+          },
+          {
+            "id": "-4|cityanthem",
+            "track": {
+              "title": "City Anthem (Radio Edit)",
+              "artist": "MC Example",
+              "year": 1988,
+              "kind": "song",
+              "isrc": null,
+              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000c",
+              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000c"
+            },
+            "earliestYear": 1988,
+            "handoffTypes": [
+              "sampled"
+            ],
+            "connectedTitles": [
+              "Funky Break"
+            ],
+            "alsoFromTitles": []
+          },
+          {
+            "id": "-5|nightdrive",
+            "track": {
+              "title": "Night Drive",
+              "artist": "DJ Sample",
+              "year": 1990,
+              "kind": "song",
+              "isrc": null,
+              "musicBrainzRecordingID": null,
+              "catalogRecordingID": "node_dccd7051cb11697744127f0485a38c58ca40ae76e51430e1148bab84bc7df3b4"
+            },
+            "earliestYear": 1990,
+            "handoffTypes": [
+              "sampled"
+            ],
+            "connectedTitles": [
+              "Funky Break"
+            ],
+            "alsoFromTitles": []
+          },
+          {
+            "id": "-6|lateecho",
+            "track": {
+              "title": "Late Echo",
+              "artist": "The Revival",
+              "year": 2005,
+              "kind": "song",
+              "isrc": null,
+              "musicBrainzRecordingID": null,
+              "catalogRecordingID": "node_66db7eb79000316763e6c8344787137343a0ee9538c2d6d918020a761a24ed89"
+            },
+            "earliestYear": 2005,
+            "handoffTypes": [
+              "sampled"
+            ],
+            "connectedTitles": [
+              "Funky Break Pt. 1"
+            ],
+            "alsoFromTitles": []
+          }
+        ],
+        "gapFromPrevious": {
+          "years": {
+            "lower": 19,
+            "upper": 36
+          },
+          "hasDateConflict": false
+        }
+      }
+    ],
+    "hasMoreBefore": false,
+    "hasMoreAfter": false
+  }
+}

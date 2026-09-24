@@ -44,6 +44,13 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/tracks/{id}/generations`.
     /// - Remark: Generated from `#/paths//v1/tracks/{id}/generations/get(getGenerations)`.
     func getGenerations(_ input: Operations.GetGenerations.Input) async throws -> Operations.GetGenerations.Output
+    /// The sound family of a recognized song
+    ///
+    /// Resolves the song as /tracks/resolve does and builds one family from every recording that matched, as Sinc's bundled catalog does for a scan: duplicate copies in separate version clusters are all the song. 404 when nothing matches.
+    ///
+    /// - Remark: HTTP `GET /v1/generations`.
+    /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)`.
+    func resolveGenerations(_ input: Operations.ResolveGenerations.Input) async throws -> Operations.ResolveGenerations.Output
     /// Other songs built from the same sources
     ///
     /// Grouped by shared source, busiest first. `total` counts every song before trimming.
@@ -136,6 +143,21 @@ extension APIProtocol {
     ) async throws -> Operations.GetGenerations.Output {
         try await getGenerations(Operations.GetGenerations.Input(
             path: path,
+            headers: headers
+        ))
+    }
+    /// The sound family of a recognized song
+    ///
+    /// Resolves the song as /tracks/resolve does and builds one family from every recording that matched, as Sinc's bundled catalog does for a scan: duplicate copies in separate version clusters are all the song. 404 when nothing matches.
+    ///
+    /// - Remark: HTTP `GET /v1/generations`.
+    /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)`.
+    public func resolveGenerations(
+        query: Operations.ResolveGenerations.Input.Query = .init(),
+        headers: Operations.ResolveGenerations.Input.Headers = .init()
+    ) async throws -> Operations.ResolveGenerations.Output {
+        try await resolveGenerations(Operations.ResolveGenerations.Input(
+            query: query,
             headers: headers
         ))
     }

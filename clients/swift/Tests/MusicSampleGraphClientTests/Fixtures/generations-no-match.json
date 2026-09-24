@@ -1,0 +1,10 @@
+{
+  "url": "/v1/generations?title=Nothing&artist=Nobody&kind=song",
+  "status": 404,
+  "body": {
+    "error": {
+      "code": "track_not_found",
+      "message": "No catalog recording matches"
+    }
+  }
+}

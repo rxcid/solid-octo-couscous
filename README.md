@@ -47,7 +47,10 @@ so check `backend/.env` before using it.
 
 The main routes are `GET /v1/tracks/resolve`, `/v1/tracks/:id`,
 `/v1/tracks/:id/relationships`, `/v1/tracks/:id/siblings`,
-`/v1/tracks/:id/lineage`, `/v1/tracks/:id/generations`, and `/v1/search`.
+`/v1/tracks/:id/lineage`, `/v1/tracks/:id/generations`, `/v1/generations`, and
+`/v1/search`. `/v1/generations` takes the same query as `resolve` and builds one
+Generations family from every recording that matched, as Sinc's bundled catalog
+does for a scan; Sinc's online Generations uses it.
 The `resolve` endpoint checks a catalog id first, then the union of ISRC and
 MusicBrainz recording ID matches, then normalized title and artist, as Sinc's
 bundled lookup does. Known title/artist aliases are a last exact stage that only

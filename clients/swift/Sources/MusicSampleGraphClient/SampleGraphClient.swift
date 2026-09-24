@@ -102,6 +102,29 @@ public struct SampleGraphClient: Sendable {
         }
     }
 
+    /// The sound family of a recognized song in one request: the server
+    /// resolves it as ``resolve(canonicalId:isrc:mbid:title:artist:kind:)``
+    /// does and builds the family from every recording that matched, as Sinc's
+    /// bundled catalog does for a scan. Throws a not-found error when nothing
+    /// matches.
+    public func resolveGenerations(
+        canonicalId: String? = nil,
+        isrc: String? = nil,
+        mbid: String? = nil,
+        title: String? = nil,
+        artist: String? = nil,
+        kind: Components.Schemas.TrackKind = .song
+    ) async throws -> Components.Schemas.GenerationsFamily {
+        switch try await client.resolveGenerations(query: .init(
+            canonicalId: canonicalId, isrc: isrc, mbid: mbid, title: title, artist: artist, kind: kind
+        )) {
+        case .ok(let response): return try response.body.json
+        case .badRequest(let response): throw SampleGraphError(400, try? response.body.json)
+        case .notFound(let response): throw SampleGraphError(404, try? response.body.json)
+        case .undocumented(let status, _): throw SampleGraphError(status, nil)
+        }
+    }
+
     /// Other songs built from the sources this song uses, busiest source first.
     public func siblings(id: String, perSource: Int? = nil, sources: Int? = nil) async throws -> [Components.Schemas.SiblingGroup] {
         switch try await client.getSiblings(path: .init(id: id), query: .init(perSource: perSource, sources: sources)) {

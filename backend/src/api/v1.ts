@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 import { Type } from "typebox";
 import * as catalog from "../catalog/repository.js";
-import { generations } from "../catalog/generations.js";
+import { generations, generationsOfTracks } from "../catalog/generations.js";
 import type { Db } from "../db/client.js";
 import {
   Direction,
@@ -23,6 +23,12 @@ const notFound = (id: string) => ({
   error: { code: "track_not_found", message: `No track with id ${id}` },
 });
 
+const missingSelector = {
+  error: { code: "invalid_request", message: "Pass canonicalId, isrc, mbid, or both title and artist." },
+};
+const hasSelector = (q: { canonicalId?: string; isrc?: string; mbid?: string; title?: string; artist?: string }) =>
+  Boolean(q.canonicalId || q.isrc || q.mbid || (q.title && q.artist));
+
 // operationId names each operation in generated clients, so keep them stable.
 export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => {
   app.get("/tracks/resolve", {
@@ -40,11 +46,7 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
     },
   }, async (request, reply) => {
     const { canonicalId, isrc, mbid, title, artist, kind = "song" } = request.query;
-    if (!canonicalId && !isrc && !mbid && !(title && artist)) {
-      return reply.code(400).send({
-        error: { code: "invalid_request", message: "Pass canonicalId, isrc, mbid, or both title and artist." },
-      });
-    }
+    if (!hasSelector(request.query)) return reply.code(400).send(missingSelector);
     const { matchedBy, trackIds } = await catalog.resolveTracks(db, { canonicalId, isrc, mbid, title, artist, kind });
     const summaries = await catalog.trackSummaries(db, trackIds);
     return { matchedBy, tracks: trackIds.map((id) => summaries.get(id)!) };
@@ -123,6 +125,28 @@ export const v1: FastifyPluginAsyncTypebox<{ db: Db }> = async (app, { db }) => 
   }, async (request, reply) => {
     const family = await generations(db, request.params.id);
     if (!family) return reply.code(404).send(notFound(request.params.id));
+    return family;
+  });
+
+  app.get("/generations", {
+    schema: {
+      operationId: "resolveGenerations",
+      tags: ["tracks"],
+      summary: "The sound family of a recognized song",
+      description: "Resolves the song as /tracks/resolve does and builds one family from every recording " +
+        "that matched, as Sinc's bundled catalog does for a scan: duplicate copies in separate version " +
+        "clusters are all the song. 404 when nothing matches.",
+      querystring: ResolveQuery,
+      response: { 200: GenerationsFamily, ...errors },
+    },
+  }, async (request, reply) => {
+    const { canonicalId, isrc, mbid, title, artist, kind = "song" } = request.query;
+    if (!hasSelector(request.query)) return reply.code(400).send(missingSelector);
+    const { trackIds } = await catalog.resolveTracks(db, { canonicalId, isrc, mbid, title, artist, kind });
+    const family = await generationsOfTracks(db, trackIds);
+    if (!family) {
+      return reply.code(404).send({ error: { code: "track_not_found", message: "No catalog recording matches" } });
+    }
     return family;
   });
 

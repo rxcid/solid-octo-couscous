@@ -30,6 +30,8 @@ const recordings: Record<string, string> = {
   relationships: `/v1/tracks/${ids.funkyBreak}/relationships`,
   lineage: `/v1/tracks/${ids.lateEcho}/lineage`,
   generations: `/v1/tracks/${ids.funkyBreak}/generations`,
+  "generations-resolved": "/v1/generations?isrc=USAAA6900001&kind=song",
+  "generations-no-match": "/v1/generations?title=Nothing&artist=Nobody&kind=song",
   "lineage-derivatives": `/v1/tracks/${ids.funkyBreak}/lineage?direction=derivatives&depth=2`,
   siblings: `/v1/tracks/${ids.nightDrive}/siblings`,
   search: "/v1/search?q=funky",

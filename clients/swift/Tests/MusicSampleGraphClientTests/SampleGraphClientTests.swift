@@ -80,6 +80,20 @@ private func client(_ recording: String) throws -> SampleGraphClient {
         #expect(family.generations.contains { $0.role == .after })
     }
 
+    @Test func resolvesAScanToOneFamily() async throws {
+        let family = try await client("generations-resolved").resolveGenerations(isrc: "USAAA6900001")
+        #expect(family.root.track.title == "Funky Break")
+        // Both pressings are roots, so Pt. 1's Late Echo is one handoff on.
+        let next = family.generations.first { $0.role == .after && $0.offset == 1 }
+        #expect(next?.records.map(\.track.title).contains("Late Echo") == true)
+        do {
+            _ = try await client("generations-no-match").resolveGenerations(title: "Nothing", artist: "Nobody")
+            Issue.record("Expected an error")
+        } catch let error as SampleGraphError {
+            #expect(error.isNotFound)
+        }
+    }
+
     @Test func decodesSiblingsAndSearch() async throws {
         let groups = try await client("siblings").siblings(id: try recordedTrackID("siblings"))
         #expect(groups.map(\.source.title) == ["Funky Break"])

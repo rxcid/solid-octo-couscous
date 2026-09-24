@@ -119,10 +119,21 @@ function parity(label: string, options: { fixture: string; catalog: string | und
     for (const vector of fixture.cases) {
       it(`matches every Swift field for ${vector.name}`, async () => {
         compareFields(await sincFamily(db, vector.request, vector.maxClusters), vector.family, vector.name);
-        if (vector.request.canonicalId && vector.maxClusters === 1500) {
+        if (vector.maxClusters !== 1500) return;
+        if (vector.request.canonicalId) {
           const response = await app.inject({ method: "GET", url: `/v1/tracks/${vector.request.canonicalId}/generations` });
           assert.equal(response.statusCode, 200, response.body);
           compareFields(response.json(), vector.family, `${vector.name}.endpoint`);
+        }
+        // What the app asks for a scan: the same request, resolved on the server.
+        const query = new URLSearchParams(Object.entries(vector.request)
+          .filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1] !== ""));
+        const scan = await app.inject({ method: "GET", url: `/v1/generations?${query}` });
+        if (vector.family === null) {
+          assert.equal(scan.statusCode, 404, scan.body);
+        } else {
+          assert.equal(scan.statusCode, 200, scan.body);
+          compareFields(scan.json(), vector.family, `${vector.name}.resolved`);
         }
       });
     }

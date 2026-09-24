@@ -1265,6 +1265,269 @@ public enum Operations {
             }
         }
     }
+    /// The sound family of a recognized song
+    ///
+    /// Resolves the song as /tracks/resolve does and builds one family from every recording that matched, as Sinc's bundled catalog does for a scan: duplicate copies in separate version clusters are all the song. 404 when nothing matches.
+    ///
+    /// - Remark: HTTP `GET /v1/generations`.
+    /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)`.
+    public enum ResolveGenerations {
+        public static let id: Swift.String = "resolveGenerations"
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/v1/generations/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f….
+                ///
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/canonicalId`.
+                public var canonicalId: Swift.String?
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/isrc`.
+                public var isrc: Swift.String?
+                /// MusicBrainz recording id.
+                ///
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/mbid`.
+                public var mbid: Swift.String?
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/title`.
+                public var title: Swift.String?
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/artist`.
+                public var artist: Swift.String?
+                /// - Remark: Generated from `#/paths/v1/generations/GET/query/kind`.
+                public var kind: Components.Schemas.TrackKind?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - canonicalId: A track's canonical id, as in Sinc's catalog, e.g. node_3577dce5b98f….
+                ///   - isrc:
+                ///   - mbid: MusicBrainz recording id.
+                ///   - title:
+                ///   - artist:
+                ///   - kind:
+                public init(
+                    canonicalId: Swift.String? = nil,
+                    isrc: Swift.String? = nil,
+                    mbid: Swift.String? = nil,
+                    title: Swift.String? = nil,
+                    artist: Swift.String? = nil,
+                    kind: Components.Schemas.TrackKind? = nil
+                ) {
+                    self.canonicalId = canonicalId
+                    self.isrc = isrc
+                    self.mbid = mbid
+                    self.title = title
+                    self.artist = artist
+                    self.kind = kind
+                }
+            }
+            public var query: Operations.ResolveGenerations.Input.Query
+            /// - Remark: Generated from `#/paths/v1/generations/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.ResolveGenerations.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.ResolveGenerations.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
+            }
+            public var headers: Operations.ResolveGenerations.Input.Headers
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - query:
+            ///   - headers:
+            public init(
+                query: Operations.ResolveGenerations.Input.Query = .init(),
+                headers: Operations.ResolveGenerations.Input.Headers = .init()
+            ) {
+                self.query = query
+                self.headers = headers
+            }
+        }
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/generations/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/generations/GET/responses/200/content/application\/json`.
+                    case json(Components.Schemas.GenerationsFamily)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas.GenerationsFamily {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.ResolveGenerations.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.ResolveGenerations.Output.Ok.Body) {
+                    self.body = body
+                }
+            }
+            /// Default Response
+            ///
+            /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.ResolveGenerations.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            public var ok: Operations.ResolveGenerations.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct BadRequest: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/generations/GET/responses/400/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/generations/GET/responses/400/content/application\/json`.
+                    case json(Components.Schemas._Error)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas._Error {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.ResolveGenerations.Output.BadRequest.Body
+                /// Creates a new `BadRequest`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.ResolveGenerations.Output.BadRequest.Body) {
+                    self.body = body
+                }
+            }
+            /// Default Response
+            ///
+            /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Operations.ResolveGenerations.Output.BadRequest)
+            /// The associated value of the enum case if `self` is `.badRequest`.
+            ///
+            /// - Throws: An error if `self` is not `.badRequest`.
+            /// - SeeAlso: `.badRequest`.
+            public var badRequest: Operations.ResolveGenerations.Output.BadRequest {
+                get throws {
+                    switch self {
+                    case let .badRequest(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "badRequest",
+                            response: self
+                        )
+                    }
+                }
+            }
+            public struct NotFound: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/v1/generations/GET/responses/404/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/v1/generations/GET/responses/404/content/application\/json`.
+                    case json(Components.Schemas._Error)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    public var json: Components.Schemas._Error {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                public var body: Operations.ResolveGenerations.Output.NotFound.Body
+                /// Creates a new `NotFound`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                public init(body: Operations.ResolveGenerations.Output.NotFound.Body) {
+                    self.body = body
+                }
+            }
+            /// Default Response
+            ///
+            /// - Remark: Generated from `#/paths//v1/generations/get(resolveGenerations)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Operations.ResolveGenerations.Output.NotFound)
+            /// The associated value of the enum case if `self` is `.notFound`.
+            ///
+            /// - Throws: An error if `self` is not `.notFound`.
+            /// - SeeAlso: `.notFound`.
+            public var notFound: Operations.ResolveGenerations.Output.NotFound {
+                get throws {
+                    switch self {
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            public init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            public var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
     /// Other songs built from the same sources
     ///
     /// Grouped by shared source, busiest first. `total` counts every song before trimming.

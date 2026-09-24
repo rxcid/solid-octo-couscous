@@ -168,6 +168,38 @@ describe("GET /v1/tracks/:id/generations", () => {
   });
 });
 
+describe("GET /v1/generations", () => {
+  type Family = {
+    root: { track: { title: string } };
+    generations: { role: string; offset: number; records: { track: { title: string } }[] }[];
+  };
+  const nextGeneration = (family: Family) =>
+    family.generations.find((g) => g.role === "after" && g.offset === 1)!.records.map((r) => r.track.title);
+
+  it("builds one family from every recording a scan resolves to", async () => {
+    // Both Funky Break pressings share the ISRC but stand in separate clusters.
+    // Pt. 1 hands on to Late Echo directly, so the scan's family has it one
+    // handoff on; from Funky Break alone it is two away, through the Radio Edit.
+    const scan = await get<Family>("/v1/generations?isrc=USAAA6900001");
+    assert.equal(scan.root.track.title, "Funky Break");
+    assert.deepEqual(nextGeneration(scan), ["City Anthem", "City Anthem (Radio Edit)", "Night Drive", "Late Echo"]);
+    assert.ok(!nextGeneration(await get<Family>(`/v1/tracks/${ids.funkyBreak}/generations`)).includes("Late Echo"));
+  });
+
+  it("resolves by title and artist, and a catalog id first", async () => {
+    const byName = await get<Family>("/v1/generations?title=Night%20Drive&artist=DJ%20Sample");
+    assert.equal(byName.root.track.title, "Night Drive");
+    const byId = await get<Family>(`/v1/generations?canonicalId=${ids.cityAnthem}&title=Night%20Drive&artist=DJ%20Sample`);
+    assert.equal(byId.root.track.title, "City Anthem");
+  });
+
+  it("404s when nothing matches and 400s without a selector", async () => {
+    assert.equal((await get<ErrorResponse>("/v1/generations?title=Nothing&artist=Nobody", 404)).error.code,
+      "track_not_found");
+    assert.equal((await get<ErrorResponse>("/v1/generations?title=Night%20Drive", 400)).error.code, "invalid_request");
+  });
+});
+
 describe("GET /v1/tracks/:id/relationships", () => {
   it("covers the whole song, one relationship per related song, never candidates", async () => {
     const body = await get<Relationships>(`/v1/tracks/${ids.funkyBreak}/relationships`);
@@ -374,6 +406,7 @@ describe("the service", () => {
     assert.deepEqual(
       Object.entries(spec.paths).map(([path, { get }]) => [path, get.operationId]).sort(),
       [
+        ["/v1/generations", "resolveGenerations"],
         ["/v1/search", "searchTracks"],
         ["/v1/tracks/resolve", "resolveTrack"],
         ["/v1/tracks/{id}", "getTrack"],
