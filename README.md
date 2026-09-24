@@ -73,10 +73,22 @@ npm run lint
 
 Database tests create or use only a database whose name ends in `_test`.
 `TEST_DATABASE_URL` overrides the derived test URL, and the test setup refuses
-any other database name. The Generations parity suite imports the bundled v16
-catalog into its own `_test` database and compares server output field by field
-with fixtures from Sinc's Swift builder. Normalization and SongIdentity tests
-also compare their shared vectors with the sibling Sinc checkout.
+any other database name. The Generations parity suite imports the bundled
+catalog into its own `_test` database and compares server output with fixtures
+from Sinc's Swift builder: every field of named cases (dated, same-year,
+multi-cluster and shared-ISRC ones among them) and a digest of every family in
+a sweep of catalog ids and multi-cluster songs. Set `SINC_CANDIDATE_CATALOG` to
+the next release's `samples.sqlite` to run the same comparison on it, in
+`music_sample_graph_parity_candidate_test`, against
+`generations_vectors_candidate.json`. Normalization and SongIdentity tests also
+compare their shared vectors with the sibling Sinc checkout.
+
+Each fixture records the SHA-256 of the catalog it came from. Sinc's
+`GenerationsParityFixtureTests` prints a fresh export when run with
+`TEST_RUNNER_EXPORT_GENERATIONS_FIXTURE=1` (and
+`TEST_RUNNER_GENERATIONS_CANDIDATE_CATALOG=<path>` for the candidate); when a
+candidate becomes the bundled catalog, its fixture becomes
+`generations_vectors.json`.
 
 The standalone GitHub Actions job has no Sinc catalog. It sets
 `SKIP_SINC_CATALOG_PARITY=1` to skip only that full-catalog parity suite, and

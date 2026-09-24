@@ -33,7 +33,10 @@ const clusterSQL = (alias: string) => sql.raw(`COALESCE(${alias}.cluster_id, -CO
 const nodeSQL = (alias: string) => sql.raw(`COALESCE(${alias}.catalog_node_id, ${alias}.id)`);
 const intArray = (values: number[]) => sql`${sql.param(values)}::int[]`;
 
-async function loadHandoffs(db: Db): Promise<{ into: Map<number, Handoff[]>; outOf: Map<number, Handoff[]> }> {
+/** Every published handoff by cluster, like Sinc's GenerationsIndex. */
+export type HandoffIndex = { into: Map<number, Handoff[]>; outOf: Map<number, Handoff[]> };
+
+export async function loadHandoffIndex(db: Db): Promise<HandoffIndex> {
   const result = await db.execute(sql`
     SELECT ${nodeSQL("parent")} AS "sourceNodeID", ${nodeSQL("child")} AS "destinationNodeID",
       ${clusterSQL("parent")} AS "sourceClusterID", ${clusterSQL("child")} AS "destinationClusterID",
@@ -81,7 +84,8 @@ async function loadRecordings(db: Db, where: ReturnType<typeof sql>): Promise<Re
 // so there is no single Swift order to copy there. Other device locales sort
 // differently offline (sv_SE moves Å, Ä and Æ); the server keeps English.
 const titleCollator = new Intl.Collator("en", { sensitivity: "accent" });
-const titleOrder = (a: string, b: string) => titleCollator.compare(a, b);
+/** Generations.swift's titleOrder: case-only differences fall back to Swift's String `<`. */
+const titleOrder = (a: string, b: string) => titleCollator.compare(a, b) || scalarOrder(a, b);
 /** Swift's String `<`: Unicode scalars of the NFC form, not a locale collation. */
 export const scalarOrder = (a: string, b: string) => {
   const left = [...a.normalize("NFC")].map((c) => c.codePointAt(0)!);
@@ -95,7 +99,8 @@ export const chronological = (a: GenerationsRecord, b: GenerationsRecord) => {
     return a.earliestYear - b.earliestYear;
   if (a.earliestYear !== null && b.earliestYear === null) return -1;
   if (a.earliestYear === null && b.earliestYear !== null) return 1;
-  return titleOrder(a.track.title, b.track.title) || scalarOrder(a.id, b.id);
+  // Swift compares titles here without titleOrder's tie-break; the id settles ties.
+  return titleCollator.compare(a.track.title, b.track.title) || scalarOrder(a.id, b.id);
 };
 const track = (r: Recording): Track => ({ title: r.title, artist: r.artist, year: r.year,
   kind: r.kind, isrc: r.isrc, musicBrainzRecordingID: r.musicBrainzRecordingID,
@@ -103,19 +108,46 @@ const track = (r: Recording): Track => ({ title: r.title, artist: r.artist, year
 
 type Walk = { levels: Set<number>[]; handoffs: Handoff[][]; hasMore: boolean };
 
-/** Returns null only when the canonical id is absent. Published handoffs only. */
-export async function generations(db: Db, canonicalID: string, maxClusters = 1500): Promise<GenerationsFamily | null> {
-  const roots = await loadRecordings(db, sql`t.canonical_id = ${canonicalID}`);
+/**
+ * The family of one catalog recording. Returns null only when the canonical
+ * id is absent. Published handoffs only. Pass `index` to reuse one handoff
+ * read across many families.
+ */
+export async function generations(
+  db: Db, canonicalID: string, maxClusters = 1500, index?: HandoffIndex,
+): Promise<GenerationsFamily | null> {
+  return family(db, await loadRecordings(db, sql`t.canonical_id = ${canonicalID}`), maxClusters, index);
+}
+
+/**
+ * The family of every recording a scan resolved to, as Sinc's
+ * SampleDatabase.generations(for:) builds it: duplicate copies of a song in
+ * separate clusters are all the song. Null when there are none.
+ */
+export async function generationsOfTracks(
+  db: Db, trackIds: number[], maxClusters = 1500, index?: HandoffIndex,
+): Promise<GenerationsFamily | null> {
+  if (!trackIds.length) return null;
+  return family(db, await loadRecordings(db, sql`t.id = ANY(${intArray(trackIds)})`), maxClusters, index);
+}
+
+/** GenerationsBuilder.build(rootRecordings:). Roots come in catalog node order, best match first. */
+async function family(
+  db: Db, roots: Recording[], maxClusters: number, index?: HandoffIndex,
+): Promise<GenerationsFamily | null> {
   if (!roots.length) return null;
   const primary = roots[0]!;
   const rootClusters = new Set(roots.map((r) => r.clusterID));
-  const edges = await loadHandoffs(db);
+  const edges = index ?? await loadHandoffIndex(db);
   const offset = new Map([...rootClusters].map((id) => [id, 0]));
   let isFull = false;
   const place = (id: number, generation: number) => {
     if (offset.size >= maxClusters) { isFull = true; return false; }
     offset.set(id, generation); return true;
   };
+  // Swift iterates each Set of clusters sorted, so which clusters fit under
+  // maxClusters never depends on a hash seed or insertion order.
+  const ascending = (clusters: Iterable<number>) => [...clusters].sort((a, b) => a - b);
   const neighbours = (id: number, sign: number) =>
     (sign < 0 ? edges.into : edges.outOf).get(id) ?? [];
   const walk = (sign: number): Walk => {
@@ -125,7 +157,7 @@ export async function generations(db: Db, canonicalID: string, maxClusters = 150
     for (let step = 1; step <= 3; step++) {
       const next = new Set<number>();
       const links: Handoff[] = [];
-      for (const cluster of frontier) for (const edge of neighbours(cluster, sign)) {
+      for (const cluster of ascending(frontier)) for (const edge of neighbours(cluster, sign)) {
         const other = sign < 0 ? edge.sourceClusterID : edge.destinationClusterID;
         if (!offset.has(other) && place(other, sign * step)) next.add(other);
         if (next.has(other)) links.push(edge);
@@ -141,7 +173,7 @@ export async function generations(db: Db, canonicalID: string, maxClusters = 150
   const after = walk(1);
   const siblingClusters = new Set<number>();
   const siblingHandoffs: Handoff[] = [];
-  for (const cluster of before.levels[0] ?? []) for (const edge of edges.outOf.get(cluster) ?? []) {
+  for (const cluster of ascending(before.levels[0] ?? [])) for (const edge of edges.outOf.get(cluster) ?? []) {
     const destination = edge.destinationClusterID;
     if (!offset.has(destination) && place(destination, 0)) siblingClusters.add(destination);
     if (siblingClusters.has(destination)) siblingHandoffs.push(edge);
