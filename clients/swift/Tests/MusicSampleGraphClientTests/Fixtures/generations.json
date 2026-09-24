@@ -47,15 +47,15 @@
         "offset": 1,
         "records": [
           {
-            "id": "-4|cityanthem",
+            "id": "-3|cityanthem",
             "track": {
-              "title": "City Anthem (Radio Edit)",
+              "title": "City Anthem",
               "artist": "MC Example",
               "year": 1988,
               "kind": "song",
-              "isrc": null,
-              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000c",
-              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000c"
+              "isrc": "USBBB8800001",
+              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000b",
+              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000b"
             },
             "earliestYear": 1988,
             "handoffTypes": [
@@ -67,15 +67,15 @@
             "alsoFromTitles": []
           },
           {
-            "id": "-3|cityanthem",
+            "id": "-4|cityanthem",
             "track": {
-              "title": "City Anthem",
+              "title": "City Anthem (Radio Edit)",
               "artist": "MC Example",
               "year": 1988,
               "kind": "song",
-              "isrc": "USBBB8800001",
-              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000b",
-              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000b"
+              "isrc": null,
+              "musicBrainzRecordingID": "00000000-0000-4000-8000-00000000000c",
+              "catalogRecordingID": "node_mb_00000000-0000-4000-8000-00000000000c"
             },
             "earliestYear": 1988,
             "handoffTypes": [
