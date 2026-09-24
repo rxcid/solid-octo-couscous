@@ -34,7 +34,7 @@ jobs:
     env:
       DATABASE_URL: postgres://msg:msg@127.0.0.1:5432/music_sample_graph_test
       TEST_DATABASE_URL: postgres://msg:msg@127.0.0.1:5432/music_sample_graph_test
-      # The bundled v16 catalog lives in Sinc, not in this repository.
+      # The bundled catalog lives in Sinc, not in this repository.
       SKIP_SINC_CATALOG_PARITY: "1"
     steps:
       - uses: actions/checkout@v7

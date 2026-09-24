@@ -26,8 +26,8 @@ You need Node.js 22.13 or newer, npm, Docker (Colima works on macOS), and a
 sibling Sinc checkout with its bundled schema-v6 catalog at
 `../Sincapp/Sinc/Resources/samples.sqlite`. Sinc pins the current bundled
 catalog in its own `catalog.lock.json`; use Sinc's documented catalog procedure
-to obtain it. The current Generations parity fixture uses the bundled v16
-catalog.
+to obtain it. The Generations parity fixture belongs to the bundled catalog,
+v17 since 2026-09-24.
 
 ```sh
 npm ci
@@ -63,7 +63,7 @@ the bundled catalog handles online misses in the meantime.
 
 ## Verify changes
 
-With PostgreSQL running and the bundled Sinc v16 catalog present (and Swift 6
+With PostgreSQL running and Sinc's bundled catalog present (and Swift 6
 for the client tests):
 
 ```sh
