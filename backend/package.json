@@ -14,7 +14,8 @@
     "db:studio": "drizzle-kit studio",
     "import:sinc": "tsx --disable-warning=ExperimentalWarning src/scripts/import-sinc.ts",
     "openapi": "tsx src/scripts/export-openapi.ts",
-    "openapi:fixtures": "tsx src/scripts/export-swift-fixtures.ts"
+    "openapi:fixtures": "tsx src/scripts/export-swift-fixtures.ts",
+    "openapi:check": "tsx --test src/api/document.test.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.0",

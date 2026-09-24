@@ -14,6 +14,7 @@ const fixturePath = join(import.meta.dirname, "__fixtures__", "generations_vecto
 const sincDir = process.env.SINC_DIR ?? resolve(import.meta.dirname, "../../../../Sincapp");
 const sourcePath = join(sincDir, "tools", "data", "generations_vectors.json");
 const catalogPath = join(sincDir, "Sinc", "Resources", "samples.sqlite");
+const skipCatalogParity = process.env.SKIP_SINC_CATALOG_PARITY === "1";
 type Case = { name: string; request: { canonicalId: string | null }; maxClusters: number; family: unknown };
 const fixture = JSON.parse(readFileSync(fixturePath, "utf8")) as { catalogSha256: string; cases: Case[] };
 let db: Db;
@@ -36,30 +37,32 @@ function compareFields(actual: unknown, expected: unknown, path: string): void {
   }
 }
 
-before(async () => {
-  if (!existsSync(catalogPath)) throw new Error(`Sinc bundled catalog missing: ${catalogPath}`);
-  const hash = createHash("sha256").update(readFileSync(catalogPath)).digest("hex");
-  assert.equal(hash, fixture.catalogSha256, "Only bundled v16 may produce the parity comparison");
-  const parityUrl = new URL(env.DATABASE_URL);
-  parityUrl.pathname = "/music_sample_graph_parity_test";
-  process.env.TEST_DATABASE_URL = parityUrl.toString();
-  const test = await setupTestDb();
-  db = test.db;
-  closeDb = () => test.pool.end();
-  // A dedicated _test database protects both development data and the other
-  // API tests. Replace it with the same bundled bytes Swift used.
-  const imported = spawnSync(process.execPath,
-    ["--import", "tsx", resolve(import.meta.dirname, "../scripts/import-sinc.ts"),
-      "--replace", "--catalog", catalogPath],
-    { cwd: resolve(import.meta.dirname, "../.."),
-      env: { ...process.env, DATABASE_URL: parityUrl.toString() }, encoding: "utf8", maxBuffer: 1024 * 1024 });
-  assert.equal(imported.status, 0, imported.stderr || imported.stdout);
-  app = await buildApp({ db, corsOrigin: "*", logger: false });
-});
+describe("GenerationsBuilder parity", {
+  skip: skipCatalogParity && "Standalone CI has no bundled Sinc v16 catalog",
+}, () => {
+  before(async () => {
+    if (!existsSync(catalogPath)) throw new Error(`Sinc bundled catalog missing: ${catalogPath}`);
+    const hash = createHash("sha256").update(readFileSync(catalogPath)).digest("hex");
+    assert.equal(hash, fixture.catalogSha256, "Only bundled v16 may produce the parity comparison");
+    const parityUrl = new URL(env.DATABASE_URL);
+    parityUrl.pathname = "/music_sample_graph_parity_test";
+    process.env.TEST_DATABASE_URL = parityUrl.toString();
+    const test = await setupTestDb();
+    db = test.db;
+    closeDb = () => test.pool.end();
+    // A dedicated _test database protects both development data and the other
+    // API tests. Replace it with the same bundled bytes Swift used.
+    const imported = spawnSync(process.execPath,
+      ["--import", "tsx", resolve(import.meta.dirname, "../scripts/import-sinc.ts"),
+        "--replace", "--catalog", catalogPath],
+      { cwd: resolve(import.meta.dirname, "../.."),
+        env: { ...process.env, DATABASE_URL: parityUrl.toString() }, encoding: "utf8", maxBuffer: 1024 * 1024 });
+    assert.equal(imported.status, 0, imported.stderr || imported.stdout);
+    app = await buildApp({ db, corsOrigin: "*", logger: false });
+  });
 
-after(async () => { await app?.close(); await closeDb?.(); });
+  after(async () => { await app?.close(); await closeDb?.(); });
 
-describe("GenerationsBuilder parity", () => {
   it("uses the exact fixture exported by Sinc's real Swift builder", {
     skip: !existsSync(sourcePath) && `no Sinc checkout at ${sincDir}`,
   }, () => assert.deepEqual(fixture, JSON.parse(readFileSync(sourcePath, "utf8"))));

@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend and OpenAPI
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: msg
+          POSTGRES_PASSWORD: msg
+          POSTGRES_DB: music_sample_graph_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U msg -d music_sample_graph_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://msg:msg@127.0.0.1:5432/music_sample_graph_test
+      TEST_DATABASE_URL: postgres://msg:msg@127.0.0.1:5432/music_sample_graph_test
+      # The bundled v16 catalog lives in Sinc, not in this repository.
+      SKIP_SINC_CATALOG_PARITY: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Check OpenAPI drift
+        run: npm run openapi:check
+      - run: npm test
+
+  swift:
+    name: Swift client
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: swift test --package-path clients/swift
