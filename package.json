@@ -22,7 +22,10 @@
     "db:studio": "npm run db:studio -w backend",
     "import:sinc": "npm run import:sinc -w backend --",
     "openapi": "npm run openapi -w backend",
-    "openapi:fixtures": "npm run openapi:fixtures -w backend"
+    "openapi:fixtures": "npm run openapi:fixtures -w backend",
+    "swift:client:sync": "node tools/sync-swift-client.mjs",
+    "swift:client:check": "node tools/sync-swift-client.mjs --check",
+    "swift:client:check-generated": "node tools/sync-swift-client.mjs --check-generated"
   },
   "devDependencies": {
     "concurrently": "^10.0.5"
